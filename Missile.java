@@ -18,6 +18,7 @@ public class Missile extends Projectile {
     public void doCollision(Item item){
         item.frontSpeed=0;
         this.actif=false;
+        item.actif=false;
     }
     
 

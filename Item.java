@@ -18,7 +18,7 @@ public abstract class Item {
     protected double[] taby;
     //protected int nbpoints; //le nombre de points utilisé dans le contour de l'objet
     protected String nomObjet;
-    protected int numObjet; //boost=1  missile=2  bombe=3  banane=4   (éclair=5)   kart=6   ces conventions peuvent être amenées à changer
+    //protected int numObjet; //boost=1  missile=2  bombe=3  banane=4   (éclair=5)   kart=6   ces conventions peuvent être amenées à changer
     protected int tempsVie; //depuis combien de temps l'objet a été crée. 
     protected boolean actif;//dit si l'objet est actif ou non 
     
@@ -53,6 +53,10 @@ public abstract class Item {
     
     public void setTemps(){// augmente le tempsVie de l'objet
            this.tempsVie++; 
+    }
+    
+    public int getTemps(){
+        return tempsVie;
     }
     
     

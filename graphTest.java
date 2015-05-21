@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
@@ -25,17 +27,17 @@ public class graphTest extends JFrame {
     BufferedImage ArrierePlan;
     Graphics buffer;
     int xpos=0;
-    int toucheHaut=69;
-    int toucheBas=70;
-   int toucheGauche=81;
-    int toucheDroite=68;
     Kart kart1;
-    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
+    Kart kart2;
+    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche,FlecheHaut,FlecheBas,FlecheDroite,FlecheGauche,Touche5,Touche2,Shift,Space;
     char tourne;
     char freine;
-    LinkedList <Item> Items;//liste de tous les objets actifs
-    
-
+    static ArrayList <Item> Items;//liste de tous les objets actifs
+    double X; //le x du kart que l'on  récupérera une fois par boucle pour éviter d'avoir à appeler tous les temps les accesseurs
+    double Y;
+    double DX;
+    double DY;
+    static int nbJoueurs=1;//2 si on est en mode 2joueurs static pour les tests
     
     
     
@@ -47,7 +49,7 @@ public class graphTest extends JFrame {
 
     public graphTest(){
         try{
-            background=ImageIO.read(new File("Fond.png"));
+            background=ImageIO.read(new File("stars.jpg"));
         }catch (IOException e){
             System.out.println("Could not load image file");
             System.exit(1);
@@ -59,11 +61,12 @@ public class graphTest extends JFrame {
         this.setSize(900,576);
         this.setVisible(true);
         Rectangle Ecran=new Rectangle(getInsets().left,getInsets().top,getSize().width-getInsets().right-getInsets().left,getSize().height-getInsets().bottom-getInsets().top);
-        kart1=new Kart(300,300,0,1,15,10,0.7,150,1,1);
+        kart1=new Kart(300,300,0,1,15,10,0.1,150,1,1);
+        kart2=new Kart(400,400,0,1,15,10,0.1,150,1,1);
         this.addKeyListener(new graphTest_this_keyAdapter(this));
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();
-        Items=new LinkedList <Item>();
+        Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
         Items.add(kart1);
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
@@ -71,6 +74,11 @@ public class graphTest extends JFrame {
         
     }
     public void boucle_principale_jeu(){
+         X=kart1.getX();
+         Y=kart1.getY();
+         DX=kart1.getdx();
+         DY=kart1.getdy();
+
         if (ToucheBas){
             freine='y';
             kart1.freine();
@@ -99,21 +107,175 @@ public class graphTest extends JFrame {
         }
         kart1.derapage(tourne,freine);
         freine='n';
-        repaint();
+        if (kart1.Bonus()){//Si le kart a un bonus dispo
+            if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
+                if (kart1.getNomBonus()=="MISSILE"){
+                    if (Shift){
+                        Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
+                        Items.add(m);
+                        kart1.setABonus(false);
+                    }
+                    else if (Space){
+                        Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
+                        Items.add(m);
+                        kart1.setABonus(false);
+                    }
+                }
+                else if (kart1.getNomBonus()=="BANANE"){
+                    if (Space){
+                        Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
+                        Items.add(b);
+                        kart1.setABonus(false);
+                    }
+                }
+                else if (kart1.getNomBonus()=="BOMBE"){
+                    if (Space){
+                        Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
+                        Items.add(b);
+                        kart1.setABonus(false);
+                    }
+                }
+            }
+        }
+        kart1.calculTheta();
+        kart1.coordCoinsX();
+        kart1.coordCoinsY();
+        /* if (kart1.colliMurs()){//en commentaire pour les tests
+            kart1.setX(X-DX*2.5);
+            kart1.setY(Y-DY*2.5);
+            kart1.setSpeed(0);                        
+        }*/
+        if (nbJoueurs==2){
+            X=kart2.getX();
+            Y=kart2.getY();
+            DX=kart2.getdx();
+            DY=kart2.getdy();
+
+            if (FlecheBas){
+               freine='y';
+               kart2.freine();
+            }
+            if (FlecheGauche){
+               tourne='g';
+            }
+            else if (FlecheDroite){
+               tourne='d';
+            }
+            else{
+               tourne='0';
+            }
+            if (FlecheHaut && (FlecheGauche || FlecheDroite )) {
+               kart2.avance(1); 
+            }
+            else if (FlecheHaut){
+               kart2.avance(0);
+            }
+            kart2.tourne(tourne);
+            if (FlecheHaut==false && (FlecheGauche || FlecheDroite )){
+               kart2.ralentit(1); 
+            }
+            else if (FlecheHaut==false){
+               kart2.ralentit(0);
+            }
+            kart2.derapage(tourne,freine);
+            freine='n';
+            if (kart2.Bonus()){//Si le kart a un bonus dispo
+               if (Touche5 || Touche2 ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
+                   if (kart2.getNomBonus()=="MISSILE"){
+                       if (Touche5){
+                           Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
+                           Items.add(m);
+                           kart2.setABonus(false);
+                       }
+                       else if (Touche2){
+                           Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
+                           Items.add(m);
+                           kart2.setABonus(false);
+                       }
+                   }
+                   else if (kart2.getNomBonus()=="BANANE"){
+                       if (Touche2){
+                           Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
+                           Items.add(b);
+                           kart2.setABonus(false);
+                       }
+                   }
+                   else if (kart2.getNomBonus()=="BOMBE"){
+                       if (Touche2){
+                           Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
+                           Items.add(b);
+                           kart2.setABonus(false);
+                       }
+                   }
+               }
+            }
+            kart2.coordCoinsX();
+            kart2.coordCoinsY();
+            if (kart2.colliMurs()){
+                kart2.setX(X-DX*2.5);
+                kart2.setY(Y-DY*2.5);
+                kart2.setSpeed(0);    
+            }
+            if (kart1.collision(kart2)){
+                //WORK IN PROGRESS méthode de collision entre les 2 karts à créer
+            }  
+        }
+        for (int i=0;i<Items.size();i++){
+            Item O=Items.get(i);
+            O.setTemps();
+            O.move();
+        }
         
+        for (int i=nbJoueurs;i<Items.size()-1;i++){
+            Item O = Items.get(i);
+            for (int j=0;j<nbJoueurs;j++){//ça teste la collision avec les karts
+                Item l=Items.get(j);
+                if (O.collision(l)){
+                    O.doCollision(l);
+                }
+            }
+            for (int j=i+1;j<Items.size();j++){//puis avec les autres bonus
+            Item l=Items.get(j);
+                if (O.collision(l)){
+                    O.doCollision(l);
+                }
+            }
+        }
+        
+        for (int i=nbJoueurs;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
+            Item O=Items.get(i);
+            if (O.nomObjet=="BOMBE"){
+                if (((Bombe)O).quandExploser()){
+                   ((Bombe)O).explosion();
+                }
+            }
+        }
+        //Garbage collector
+        for (int k=nbJoueurs; k<Items.size(); k++) {
+            Item O = Items.get(k);
+            if (O.actif==false) {
+                Items.remove(k);
+                    k--; 
+            }
+        }
+        
+        repaint();
     }
     public void paint(Graphics g){
-        //int xc=getSize().width/2;
-       // int yc=getSize().height/2;
-        //buffer.setColor(Color.black);
-        //buffer.fillRect(0,0,2000,2000);
         buffer.drawImage(background,0,0,this);
         //Graphics2D g2d=(Graphics2D)buffer;//partie où on fait pivoter l'image
         //AffineTransform transformer=g2d.getTransform();
-        kart1.drawGraphTest(buffer);
+        //kart1.drawGraphTest(buffer);
         //System.out.println(thetaIm);
         //g2d.rotate(-thetaIm,kart1.getX(),kart1.getY());
+        //g.drawImage(ArrierePlan,0,0,this);
+        for (int k=0; k<Items.size(); k++) {
+            Item O = Items.get(k);
+            O.drawGraphTest(buffer);
+        }
+        // dessine une seule fois le buffer dans le Panel
         g.drawImage(ArrierePlan,0,0,this);
+  
     }
     
      void this_keyPressed(KeyEvent e){
@@ -134,6 +296,12 @@ public class graphTest extends JFrame {
         else if (code==90){
             ToucheHaut=true;
         }
+        else if (code==16){
+            Shift=true;
+        }
+        else if (code==32){
+            Space=true;
+        }
         
         if (ToucheHaut && ToucheBas){
             ToucheHaut=false;
@@ -142,6 +310,34 @@ public class graphTest extends JFrame {
         if (ToucheGauche && ToucheDroite){
             ToucheGauche=false;
             ToucheDroite=false;
+        }
+        //TOUCHES DU KART 2
+        if (code==38){
+            FlecheHaut=true;//flèche de la droite du clavier, différent de ToucheHaut (z)
+        }
+        else if (code==40){
+            FlecheBas=true;
+        }
+        else if (code==37){
+            FlecheDroite=true;
+        }
+        else if (code==39){
+            FlecheGauche=true;
+        }
+        else if (code==101){
+            Touche5=true;
+        }
+        else if (code==98){
+            Touche2=true;
+        }
+        
+        if (FlecheHaut && FlecheBas){
+            FlecheHaut=false;
+            FlecheBas=false;
+        }
+        if (FlecheGauche && FlecheDroite){
+            FlecheGauche=false;
+            FlecheDroite=false;
         }
     }
 
@@ -152,13 +348,37 @@ public class graphTest extends JFrame {
             ToucheDroite=false;
         }
         else if (code==81){
-                ToucheGauche=false;
+            ToucheGauche=false;
         }   
         else if (code==83){
             ToucheBas=false;
         } 
         else if (code==90){
                 ToucheHaut=false;
+        }
+        else if (code==38){
+            FlecheHaut=false;//flèche de la droite du clavier, différent de ToucheHaut (z)
+        }
+        else if (code==16){
+            Shift=false;
+        }
+        else if (code==40){
+            FlecheBas=false;
+        }
+        else if (code==32){
+            Space=false;
+        }
+        else if (code==101){
+            Touche5=false;
+        }
+        else if (code==98){
+            Touche2=false;
+        }
+        else if (code==37){
+            FlecheDroite=false;
+        }
+        else if (code==39){
+            FlecheGauche=false;
         }
     } 
     
@@ -172,9 +392,7 @@ public class graphTest extends JFrame {
         }
         public void keyReleased(KeyEvent e){
             adaptee.this_keyReleased(e);
-        }
-        
-        
+        }  
         
     }
     public static void main(String args[]){

@@ -16,7 +16,7 @@ public  abstract class Projectile extends Item{
             }
             
         }
-        if (item.numObjet!=6){//on a donc affaire à un bonus
+        else{//on a donc affaire à un bonus
             if (Math.sqrt((this.x-item.x)*(this.x-item.x)+(this.y-y)*(this.y-item.y))<this.rayon){
                 colli=true;
             }
