@@ -68,6 +68,8 @@ public class graphTest extends JFrame {
         buffer=ArrierePlan.getGraphics();
         Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
         Items.add(kart1);
+        Cadeau c=new Cadeau(320,320,1,0);//test avec un cadeau
+        Items.add(c);
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
         
@@ -226,7 +228,7 @@ public class graphTest extends JFrame {
             O.move();
         }
         
-        for (int i=nbJoueurs;i<Items.size()-1;i++){
+        for (int i=nbJoueurs;i<Items.size();i++){
             Item O = Items.get(i);
             for (int j=0;j<nbJoueurs;j++){//ça teste la collision avec les karts
                 Item l=Items.get(j);
@@ -248,6 +250,10 @@ public class graphTest extends JFrame {
                 if (((Bombe)O).quandExploser()){
                    ((Bombe)O).explosion();
                 }
+            }
+            if(O.nomObjet=="CADEAU"){
+                ((Cadeau)O).rendVisible();
+                
             }
         }
         //Garbage collector

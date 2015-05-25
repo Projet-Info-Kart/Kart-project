@@ -66,6 +66,6 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
    
     public void drawGraphTest(Graphics g){
         g.setColor(Color.black);
-        g.fillOval((int)x,(int)(576-y),10,10);//rayon du cercle à adapter aver l'échelle
+        g.fillOval((int)x,(int)(576-y),10,10);//rayon du cercle à adapter avec l'échelle
     }
 }

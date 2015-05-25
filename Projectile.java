@@ -3,7 +3,7 @@ public  abstract class Projectile extends Item{
     
     public Projectile(double x, double y, double dx, double dy){
         super(x,y,dx,dy);
-        this.rayon=0.75;
+        this.rayon=0.75;//arbitraire normalement 0.75
     }
     
     public boolean collision(Item item){

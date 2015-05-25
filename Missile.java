@@ -6,7 +6,7 @@ public class Missile extends Projectile {
     public Missile(double x, double y,double dx, double dy){
         super(x,y,dx,dy);
         this.frontSpeed=25;
-        this.rayon=15;//arbitraire pour l'instant
+        
         this.nomObjet="MISSILE";
     }
     
@@ -25,7 +25,7 @@ public class Missile extends Projectile {
     
     public void drawGraphTest(Graphics g){
         g.setColor(Color.green);
-        g.fillOval((int)x,(int)(576-y),(int)rayon,(int)rayon);//rayon du cercle à adapter aver l'échelle
+        g.fillOval((int)x,(int)(576-y),15,15);//rayon du cercle à adapter aver l'échelle
     }
     
 }

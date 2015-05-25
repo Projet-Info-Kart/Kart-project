@@ -25,8 +25,8 @@ public class Kart extends Item {
     private double coeffFrein;//coeff de freinage qui fait augmenter la fCent lorsqu'on freine;
     private double dxDir,dyDir;
     private int compt;//compteur dérapage
-    private boolean aBonus=true;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private static String nomBonus="BOMBE";//PAREIL
+    private boolean aBonus;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
+    private String nomBonus;//PAREIL
     
     
     
@@ -44,7 +44,7 @@ public class Kart extends Item {
         contrebraqueMax=0.25;
         this.poids=poids;
         this.adherence=adherence;
-        
+        this.aBonus=false;
         this.nomObjet="KART";
         
         frontSpeed=0;
@@ -419,5 +419,18 @@ public class Kart extends Item {
     }
     public void setABonus(boolean b){
         this.aBonus=b;
+    }
+    
+    public void setBonus(int i){
+        if (i==1){
+            this.nomBonus="MISSILE";
+        }
+        if (i==2){
+            this.nomBonus="BANANE";
+        }
+        if (i==3){
+            this.nomBonus="BOMBE";
+        }
+        this.aBonus=true;
     }
 }
