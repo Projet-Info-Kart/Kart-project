@@ -94,6 +94,7 @@ public class Window extends JFrame {
         public void actionPerformed(ActionEvent actionEvent){
             selectionKart.setVisible(false);
             field.setVisible(true);
+            field.activeCompteur();
             repaint();
         }
      });
@@ -117,16 +118,13 @@ public class Window extends JFrame {
             private Window adaptee;
             Window_this_keyAdapter(Window adaptee){
                this.adaptee=adaptee; 
-               System.out.println ("install key listener");
             }
             public void keyPressed(KeyEvent e){
-                System.out.println ("kp");
-                adaptee.this_keyPressed(e);
-                                 
+                field.this_keyPressed(e);
                 
             }
             public void keyReleased(KeyEvent e){
-                adaptee.this_keyReleased(e);
+                field.this_keyReleased(e);
                
             }
             

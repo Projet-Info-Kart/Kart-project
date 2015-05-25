@@ -44,6 +44,10 @@ public class PanelField extends JPanel{
     int toucheDroite=68;
     boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
     
+    boolean debutJeu=false;
+    double tempsCourse=0;
+    int tempsTotal;
+    
     char tourne;
     char freine;
     int xpos=0;
@@ -77,7 +81,7 @@ public class PanelField extends JPanel{
         //this.addKeyListener(new PanelField_this_keyAdapter(this));
         
         
-        kart1=new Kart(444,175,0,1,15,10,0.7,150,1,1);
+        kart1=new Kart(439,169,0,1,15,10,0.7,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
         
         hWind =h;
         echelleKart=ech;
@@ -156,8 +160,8 @@ public class PanelField extends JPanel{
         
         /*int X=this.m2SX(kart1.getX()-0.5,kart1.getY()-1,0, hWind, hWind, 0, echelleKart);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
         int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()-1,0, hWind, hWind, 0, echelleKart);           // et dessin qui prend en compte le coin haut gauche
-        kart1.draw(buffer,X,Y);
-        System.out.println(X+","+Y);*/
+        kart1.draw(buffer,X,Y);*/
+        //System.out.println(X+","+Y);
         //Back.repaint();
         paintComponents(buffer);
         g.drawImage(ArrierePlan,0,0,this);
@@ -170,12 +174,24 @@ public class PanelField extends JPanel{
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
             boucle_principale_jeu();
+            if(debutJeu){
+                tempsTotal+=25;
+            }
+            
+            if(tempsTotal>=10000){   // Définir le départ du chrono. Arbitrairement 10s
+                tempsCourse+=25;
+                System.out.println("Temps de course : "+tempsCourse/1000+" sec");
+            }           
         }
         
     }
     
+    public void activeCompteur(){
+       debutJeu=true; 
+    }
+    
     public void boucle_principale_jeu(){
-        
+        if (tempsCourse>0){
         if (ToucheBas){
             freine='y';
             kart1.freine();
@@ -203,19 +219,30 @@ public class PanelField extends JPanel{
             kart1.ralentit(0);
         }
         kart1.derapage(tourne,freine);
-        freine='n';
+        freine='n';}
         
-        //alpha=kart1.getTheta()-Math.PI/2;
-        if(alpha>Math.PI && alpha<2*Math.PI){alpha=-alpha+Math.PI;}
+        
+        kart1.calculTheta();        
+       alpha=kart1.getTheta()-Math.PI/2;
+        
+        
+        
+        if(alpha>Math.PI && alpha<2*Math.PI){
+            alpha=alpha-2*Math.PI;
+        }else if(alpha<-Math.PI && alpha >-2*Math.PI){
+            alpha=alpha+2*Math.PI;}
         
         buffer.setColor( new Color(0, 150, 0) );
        buffer.fillRect(0,0,1200,840);
         buffer.setColor(Color.black);
         
-        
-            
-       double fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(20/Math.sqrt(20*20+21*21))+alpha);
-       double fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(21/Math.sqrt(20*20+21*21))+alpha);
+        double fx,fy;
+        if(alpha>=0){    
+            fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))+alpha);
+            fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
+        }else{
+            fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))-alpha);
+            fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))-alpha);}
        //System.out.println(fx+","+fy);
         
         
@@ -238,14 +265,7 @@ public class PanelField extends JPanel{
               
              
         }
-        int a=402;
-        x1=this.m2SX(tabXext[a]+250, tabYext[a]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
-        x2=this.m2SX(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
-        y1=this.m2SY(tabXext[a]+250, tabYext[a]+175,fx,fy, 28, alpha, echelle);
-        y2=this.m2SY(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);
-        //System.out.println(tabXext[a]+","+tabYext[a]+","+x1+","+x2+","+y1+","+y2);
-        buffer.drawLine(x1,y1,x2,y2);
-        
+                
         // Ellispe Intérieure
         for(int i=0; i<752; i++){
             x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
@@ -255,9 +275,39 @@ public class PanelField extends JPanel{
             buffer.drawLine(x1,y1,x2,y2);
         }
         
-        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()-1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()-1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
+        //Ligne de départ
+        if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
+            buffer.setColor(Color.white);
+                x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
+                x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);  
+            
+                x1=this.m2SX(450-6, 175,fx, fy, 28, alpha, echelle);       
+                x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(450-6, 175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(450-9, 175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);    
+            
+        }
+        
+        
+        
+        /*int a=400;
+        x1=this.m2SX(tabXext[a]+250, tabYext[a]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
+        x2=this.m2SX(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
+        y1=this.m2SY(tabXext[a]+250, tabYext[a]+175,fx,fy, 28, alpha, echelle);
+        y2=this.m2SY(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);
+        System.out.println(tabXext[a]+","+tabYext[a]+","+x1+","+x2+","+y1+","+y2);
+        buffer.drawLine(x1,y1,x2,y2);*/
+        
+        
+        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
+        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
         kart1.draw(buffer,X,Y);
+        
+        
         
         
         repaint();
@@ -275,22 +325,22 @@ public class PanelField extends JPanel{
      * @return la coordonée X**/
      public int m2SX(double mx,double my, double fx, double fy, int fh,double a,double ech){
          double DX,DY,xA,yA,X;
-         //if(a>=0){
+         if(a>=0){
             xA=fx+fh*Math.sin(a);
             yA=fy-fh*Math.cos(a);
-            DX=Math.abs(mx-xA);            
-            DY=Math.abs(my-yA);
+             DX=Math.abs(mx-xA);           
+            DY=my-yA;
              if (mx-xA>=0){X=Math.cos(a)*DX+Math.sin(a)*DY;}
              else {X=-Math.cos(a)*DX+Math.sin(a)*DY;}
                    
-         /*}else {
-            xA=fx-fh*Math.sin(-a);
-            yA=fy-fh*Math.cos(-a);
-            DX=Math.abs(mx-xA);            
-            DY=Math.abs(my-yA);
-            X=Math.cos(a)*DY-Math.sin(a)*DX;  
-         } */
-             if(a<0){X=-X;}
+         }else {
+            xA=fx-fh*Math.sin(a);
+            yA=fy-fh*Math.cos(a);
+            DX=mx-xA;            
+             DY=Math.abs(my-yA);
+            if (my-yA>=0){X=Math.cos(a)*DX-Math.sin(a)*DY; }
+             else{X=Math.cos(a)*DX+Math.sin(a)*DY;}
+         } 
          
          return (int)(X*ech); 
      }
@@ -306,26 +356,25 @@ public class PanelField extends JPanel{
       * @return la coordonée Y**/
     public int m2SY(double mx,double my, double fx, double fy, int fh,double a,double ech){
         double DX,DY,xA,yA,Y;
-        //if(a>=0){
+        if(a>=0){
             xA=fx+fh*Math.sin(a);
             yA=fy-fh*Math.cos(a);
             DX=Math.abs(mx-xA);            
-            DY=Math.abs(my-yA);
+            DY=my-yA;
             
             if (mx-xA>=0){Y=Math.cos(a)*DY-Math.sin(a)*DX;}
             else {Y=Math.cos(a)*DY+Math.sin(a)*DX;}
-            if(my-yA<0){
-                Y=-Y;
-            }
+           
             
-        /*}else {
-            xA=fx-fh*Math.sin(-a);
-            yA=fy-fh*Math.cos(-a);
-            DX=Math.abs(mx-xA);            
+        }else {
+            xA=fx-fh*Math.sin(a);
+            yA=fy-fh*Math.cos(a);
+            DX=mx-xA;             
             DY=Math.abs(my-yA);
-            Y=Math.cos(a)*DX+Math.sin(a)*DY;  
-        }*/
-        if(a<0){Y=-Y;}
+            if (my-yA>=0){Y=Math.cos(a)*DY+Math.sin(a)*DX;}
+            else{Y=-Math.cos(a)*DY+Math.sin(a)*DX;}
+        }
+        
         return (int)(840-Y*ech); 
     }
     
@@ -346,11 +395,11 @@ public class PanelField extends JPanel{
           
       }
       
-      void this_keyPressed(KeyEvent e){
+      public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
-          System.out.println("Key pressed : "+code);
+          //System.out.println("Key pressed : "+code);
           
-          //if(numJoueur==1){               // Joueur 1 : pavé QZDS
+          if(numJoueur==1){               // Joueur 1 : pavé QZDS
               if (code==68){
                   ToucheDroite=true;
               }else if (code==81){
@@ -360,7 +409,7 @@ public class PanelField extends JPanel{
               }else if (code==90){
                   ToucheHaut=true;
               }
-          /*}else if (numJoueur==2){       // Joueur 2 : pavé flèches
+          }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=true;
               }else if (code==37){
@@ -370,7 +419,7 @@ public class PanelField extends JPanel{
               }else if (code==38){
                   ToucheHaut=true;
               }
-          }*/
+          }
           
           
           if (ToucheHaut && ToucheBas){
@@ -385,9 +434,9 @@ public class PanelField extends JPanel{
 
       void this_keyReleased(KeyEvent e){
           int code=e.getKeyCode();
-          System.out.println("Key released : "+code);
+          //System.out.println("Key released : "+code);
           
-          //if(numJoueur==1){               // Joueur 1 : pavé QZDS
+          if(numJoueur==1){               // Joueur 1 : pavé QZDS
               if (code==68){
                   ToucheDroite=false;
               }else if (code==81){
@@ -397,7 +446,7 @@ public class PanelField extends JPanel{
               }else if (code==90){
                   ToucheHaut=false;
               }
-          /*}else if (numJoueur==2){       // Joueur 2 : pavé flèches
+          }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=false;
               }else if (code==37){
@@ -407,7 +456,7 @@ public class PanelField extends JPanel{
               }else if (code==38){
                   ToucheHaut=false;
               }
-          }*/
+          }
           
           
       } 
