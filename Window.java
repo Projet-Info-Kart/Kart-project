@@ -94,6 +94,7 @@ public class Window extends JFrame {
         public void actionPerformed(ActionEvent actionEvent){
             selectionKart.setVisible(false);
             field.setVisible(true);
+            field.activeCompteur();
             repaint();
         }
      });

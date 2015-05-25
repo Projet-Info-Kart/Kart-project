@@ -16,7 +16,7 @@ public class Kart extends Item {
     private double fCent;
     private double adherence;
     private double maxSpeed;
-    private static double h,l;//hauteur et largeur de l'objet, la hauteur étant dans la direction du vecteur (dx,dy)
+    private double h,l;//hauteur et largeur de l'objet, la hauteur étant dans la direction du vecteur (dx,dy)
     private boolean derapeDroite;
     private boolean derapeGauche;
     private double contrebraque;// coeff de contrebraquage lors du dérapage
@@ -26,7 +26,7 @@ public class Kart extends Item {
     private double dxDir,dyDir;
     private int compt;//compteur dérapage
     private boolean aBonus=true;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private static String nomBonus="BOMBE";//PAREIL
+    private static String nomBonus="MISSILE";//PAREIL
     
     
     

@@ -43,9 +43,10 @@ public class PanelField extends JPanel{
     int toucheGauche=81;
     int toucheDroite=68;
     boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
-    boolean depart=false;
-    int tempsCourse=0;
-    int tempsTotal=0;
+    
+    boolean debutJeu=false;
+    double tempsCourse=0;
+    int tempsTotal;
     
     char tourne;
     char freine;
@@ -80,7 +81,7 @@ public class PanelField extends JPanel{
         //this.addKeyListener(new PanelField_this_keyAdapter(this));
         
         
-        kart1=new Kart(444,175,0,1,15,10,0.7,150,1,1);
+        kart1=new Kart(439,169,0,1,15,10,0.7,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
         
         hWind =h;
         echelleKart=ech;
@@ -173,18 +174,24 @@ public class PanelField extends JPanel{
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
             boucle_principale_jeu();
-            tempsTotal+=25;
-            System.out.println("Temps total : "+tempsTotal/1000+" sec");
-            if(tempsTotal==10000){depart=true;} // Définir le départ du chrono. Arbitrairement 10000
-            if(depart){tempsCourse+=25;
-                       System.out.println("Temps de course : "+tempsCourse/1000+" sec");}
+            if(debutJeu){
+                tempsTotal+=25;
+            }
             
+            if(tempsTotal>=10000){   // Définir le départ du chrono. Arbitrairement 10s
+                tempsCourse+=25;
+                System.out.println("Temps de course : "+tempsCourse/1000+" sec");
+            }           
         }
         
     }
     
+    public void activeCompteur(){
+       debutJeu=true; 
+    }
+    
     public void boucle_principale_jeu(){
-        
+        if (tempsCourse>0){
         if (ToucheBas){
             freine='y';
             kart1.freine();
@@ -212,7 +219,9 @@ public class PanelField extends JPanel{
             kart1.ralentit(0);
         }
         kart1.derapage(tourne,freine);
-        freine='n';
+        freine='n';}
+        
+        
         kart1.calculTheta();        
        alpha=kart1.getTheta()-Math.PI/2;
         
@@ -269,13 +278,18 @@ public class PanelField extends JPanel{
         //Ligne de départ
         if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
             buffer.setColor(Color.white);
-            for (int i=0;i<12;i++){
-                x1=this.m2SX(450-i, 175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
-                x2=this.m2SX(450-i-1, 175,fx, fy, 28, alpha, echelle);      // +0.5
-                y1=this.m2SY(450-i, 175,fx,fy, 28, alpha, echelle);
-                y2=this.m2SY(450-i-1, 175,fx, fy, 28, alpha, echelle);
+                x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
+                x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);  
+            
+                x1=this.m2SX(450-6, 175,fx, fy, 28, alpha, echelle);       
+                x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(450-6, 175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(450-9, 175,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);    
-            }
+            
         }
         
         
@@ -289,8 +303,8 @@ public class PanelField extends JPanel{
         buffer.drawLine(x1,y1,x2,y2);*/
         
         
-        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()-1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()-1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
+        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
+        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
         kart1.draw(buffer,X,Y);
         
         
