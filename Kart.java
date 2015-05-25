@@ -26,8 +26,8 @@ public class Kart extends Item {
     private double dxDir,dyDir;
     private int compt;//compteur dérapage
 
-    private boolean aBonus=true;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private static String nomBonus="MISSILE";//PAREIL
+    private boolean aBonus;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
+    private static String nomBonus;//PAREIL
 
     
     
