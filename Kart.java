@@ -16,7 +16,7 @@ public class Kart extends Item {
     private double fCent;
     private double adherence;
     private double maxSpeed;
-    private double h,l;//hauteur et largeur de l'objet, la hauteur étant dans la direction du vecteur (dx,dy)
+    private static double h,l;//hauteur et largeur de l'objet, la hauteur étant dans la direction du vecteur (dx,dy)
     private boolean derapeDroite;
     private boolean derapeGauche;
     private double contrebraque;// coeff de contrebraquage lors du dérapage
@@ -25,8 +25,8 @@ public class Kart extends Item {
     private double coeffFrein;//coeff de freinage qui fait augmenter la fCent lorsqu'on freine;
     private double dxDir,dyDir;
     private int compt;//compteur dérapage
-    private static boolean aBonus=true;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private static String nomBonus="MISSILE";//PAREIL
+    private boolean aBonus=true;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
+    private static String nomBonus="BOMBE";//PAREIL
     
     
     
@@ -103,7 +103,11 @@ public class Kart extends Item {
                 frontSpeed=maxSpeed;
             }
             
+
         }//System.out.println("frontSpeed= "+frontSpeed);
+
+        
+
         if (i==0 && derapeDroite==false && derapeGauche==false){
             x=x+dx*(frontSpeed*0.025);
             y=y+dy*(frontSpeed*0.025);
@@ -416,5 +420,8 @@ public class Kart extends Item {
     
     public void move(){
         
+    }
+    public void setABonus(boolean b){
+        this.aBonus=b;
     }
 }

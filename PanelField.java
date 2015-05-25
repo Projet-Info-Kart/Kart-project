@@ -43,6 +43,9 @@ public class PanelField extends JPanel{
     int toucheGauche=81;
     int toucheDroite=68;
     boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
+    boolean depart=false;
+    int tempsCourse=0;
+    int tempsTotal=0;
     
     char tourne;
     char freine;
@@ -170,6 +173,12 @@ public class PanelField extends JPanel{
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
             boucle_principale_jeu();
+            tempsTotal+=25;
+            System.out.println("Temps total : "+tempsTotal/1000+" sec");
+            if(tempsTotal==10000){depart=true;} // Définir le départ du chrono. Arbitrairement 10000
+            if(depart){tempsCourse+=25;
+                       System.out.println("Temps de course : "+tempsCourse/1000+" sec");}
+            
         }
         
     }
@@ -205,18 +214,14 @@ public class PanelField extends JPanel{
         kart1.derapage(tourne,freine);
         freine='n';
         kart1.calculTheta();        
-        alpha=kart1.getTheta()-Math.PI/2;
+       alpha=kart1.getTheta()-Math.PI/2;
         
         
         
         if(alpha>Math.PI && alpha<2*Math.PI){
             alpha=alpha-2*Math.PI;
         }else if(alpha<-Math.PI && alpha >-2*Math.PI){
-            alpha=alpha+2*Math.PI;
-            System.out.println("alpha compris entre -pi et -2pi");}
-        
-        if (alpha%Math.PI<0.2){System.out.println("Alpha : "+alpha/Math.PI+" Pi");}
-        else{System.out.println(kart1.getTheta()+","+alpha);}
+            alpha=alpha+2*Math.PI;}
         
         buffer.setColor( new Color(0, 150, 0) );
        buffer.fillRect(0,0,1200,840);
@@ -261,13 +266,27 @@ public class PanelField extends JPanel{
             buffer.drawLine(x1,y1,x2,y2);
         }
         
-        int a=400;
+        //Ligne de départ
+        if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
+            buffer.setColor(Color.white);
+            for (int i=0;i<12;i++){
+                x1=this.m2SX(450-i, 175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(450-i-1, 175,fx, fy, 28, alpha, echelle);      // +0.5
+                y1=this.m2SY(450-i, 175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(450-i-1, 175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);    
+            }
+        }
+        
+        
+        
+        /*int a=400;
         x1=this.m2SX(tabXext[a]+250, tabYext[a]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
         x2=this.m2SX(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
         y1=this.m2SY(tabXext[a]+250, tabYext[a]+175,fx,fy, 28, alpha, echelle);
         y2=this.m2SY(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);
         System.out.println(tabXext[a]+","+tabYext[a]+","+x1+","+x2+","+y1+","+y2);
-        buffer.drawLine(x1,y1,x2,y2);
+        buffer.drawLine(x1,y1,x2,y2);*/
         
         
         int X=this.m2SX(kart1.getX()-0.5,kart1.getY()-1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
@@ -295,7 +314,7 @@ public class PanelField extends JPanel{
          if(a>=0){
             xA=fx+fh*Math.sin(a);
             yA=fy-fh*Math.cos(a);
-             DX=mx-xA;            
+             DX=Math.abs(mx-xA);           
             DY=my-yA;
              if (mx-xA>=0){X=Math.cos(a)*DX+Math.sin(a)*DY;}
              else {X=-Math.cos(a)*DX+Math.sin(a)*DY;}
@@ -303,9 +322,10 @@ public class PanelField extends JPanel{
          }else {
             xA=fx-fh*Math.sin(a);
             yA=fy-fh*Math.cos(a);
-            DX=Math.abs(mx-xA);            
-             DY=my-yA;
-            X=Math.cos(a)*DX-Math.sin(a)*DY;  
+            DX=mx-xA;            
+             DY=Math.abs(my-yA);
+            if (my-yA>=0){X=Math.cos(a)*DX-Math.sin(a)*DY; }
+             else{X=Math.cos(a)*DX+Math.sin(a)*DY;}
          } 
          
          return (int)(X*ech); 
@@ -335,9 +355,10 @@ public class PanelField extends JPanel{
         }else {
             xA=fx-fh*Math.sin(a);
             yA=fy-fh*Math.cos(a);
-            DX=Math.abs(mx-xA);             
-            DY=my-yA;
-            Y=Math.cos(a)*DY+Math.sin(a)*DX;  
+            DX=mx-xA;             
+            DY=Math.abs(my-yA);
+            if (my-yA>=0){Y=Math.cos(a)*DY+Math.sin(a)*DX;}
+            else{Y=-Math.cos(a)*DY+Math.sin(a)*DX;}
         }
         
         return (int)(840-Y*ech); 
