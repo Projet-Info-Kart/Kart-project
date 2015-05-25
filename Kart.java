@@ -60,7 +60,7 @@ public class Kart extends Item {
     public void tourne(char a){
         double theta=0;
         if (a=='g'&& derapeGauche==false && derapeDroite==false && frontSpeed>0.2){
-            System.out.println("tourne à gauche");
+            //System.out.println("tourne à gauche");
             double dxc=-dy;
             double dyc=dx;
             double xc=x+rayCourb*dxc;
@@ -75,7 +75,7 @@ public class Kart extends Item {
         }
     
         if (a=='d' && derapeDroite==false && derapeGauche==false && frontSpeed>0.2){
-            System.out.println("tourne à droite");
+            //System.out.println("tourne à droite");
             double dxc=dy;
             double dyc=-dx;
             double xc=x+rayCourb*dxc;
@@ -103,7 +103,7 @@ public class Kart extends Item {
                 frontSpeed=maxSpeed;
             }
             
-        }System.out.println("frontSpeed= "+frontSpeed);
+        }//System.out.println("frontSpeed= "+frontSpeed);
         if (i==0 && derapeDroite==false && derapeGauche==false){
             x=x+dx*(frontSpeed*0.025);
             y=y+dy*(frontSpeed*0.025);
@@ -144,7 +144,7 @@ public class Kart extends Item {
                 if (contrebraque<contrebraqueMax){
                     contrebraque=contrebraqueMax;
                 }
-            }System.out.println("contrebraque="+contrebraque);
+            }//System.out.println("contrebraque="+contrebraque);
         }
         else if ((derapeGauche || derapeDroite) && tourne=='0'){//coeff moins fort quand on ne fait que redresser les roues
             if (contrebraque>contrebraqueMax+0.4){//d'où le 0.4
@@ -178,12 +178,12 @@ public class Kart extends Item {
                     dyDir=dy;
                 }
                 derapeGauche=true;
-                System.out.println("fadm="+fAdm+" fCent="+fCent);
+                //System.out.println("fadm="+fAdm+" fCent="+fCent);
                 double normexDir=1;
                 double normeyDir=1;
                 double normex=1;
                 double normey=1;
-                System.out.println("dérape gauche");
+                //System.out.println("dérape gauche");
                 double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;
                 if (dyDir!=0){                                   //cette partie permet de calculer les nouveaux dxDir et dyDir de la voiture=direction vers laquelle la voiture roule         
                     normexDir=Math.tan(thetaDir)*(dyDir/Math.abs(dyDir));
@@ -203,7 +203,7 @@ public class Kart extends Item {
                 
                 
                 double thetad=frontSpeed*0.01*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
-                System.out.println("THETA= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
+               // System.out.println("THETA= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
                 if (dy!=0){                                   //cette partie permet de calculer les nouveaux dx et dy=orientation de la voiture        
                     normex=Math.tan(thetad)*(dy/Math.abs(dy));
                 }else if (dx<0){
@@ -236,7 +236,7 @@ public class Kart extends Item {
                     dyDir=dy;
                 }
                 derapeDroite=true;
-                System.out.println("dérape droite");
+                //System.out.println("dérape droite");
                 double normexDir=1;
                 double normeyDir=1;
                 double normex=1;
@@ -260,7 +260,7 @@ public class Kart extends Item {
                 dyDir=(y2Dir-y)/normeDir;
                 
                 double thetad=frontSpeed*0.01*coeffFrein;
-                System.out.println("THETA= "+thetad);
+                //System.out.println("THETA= "+thetad);
                 if (dy!=0){
                     normex=Math.tan(thetad)*(dy/Math.abs(dy));
                 }else if (dx<0){
@@ -276,9 +276,9 @@ public class Kart extends Item {
                 double norme=Math.sqrt((x2-x)*(x2-x)+(y2-y)*(y2-y));
                 dx=(x2-x)/norme;
                 dy=(y2-y)/norme;
-                System.out.println("norme="+norme);
-                System.out.println("dx="+dx);
-                System.out.println("dy="+dy);
+                //System.out.println("norme="+norme);
+               // System.out.println("dx="+dx);
+               // System.out.println("dy="+dy);
             
                 if (Math.abs(Math.atan2(dy,dx)-Math.atan2(dyDir,dxDir))>0.5){
                     coeff=0.1;

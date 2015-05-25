@@ -55,5 +55,8 @@ public abstract class Item {
            this.tempsVie++; 
     }
     
+    public double getTheta(){
+        return theta;
+    }
     
 }
