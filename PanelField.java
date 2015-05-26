@@ -47,6 +47,8 @@ public class PanelField extends JPanel{
     boolean debutJeu=false;
     double tempsCourse=0;
     int tempsTotal;
+    int nbTours=0;
+    double[][] position=new double[2][2];
     
     char tourne;
     char freine;
@@ -81,7 +83,7 @@ public class PanelField extends JPanel{
         //this.addKeyListener(new PanelField_this_keyAdapter(this));
         
         
-        kart1=new Kart(439,169,0,1,15,10,0.7,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+        kart1=new Kart(439,169,0,1,15,10,0.1,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
         
         hWind =h;
         echelleKart=ech;
@@ -126,6 +128,9 @@ public class PanelField extends JPanel{
               
              
         }*/
+        
+        position[0][0]=kart1.getX();
+        position[0][1]=kart1.getY();
      
     }
     public void paint(Graphics g){
@@ -181,7 +186,16 @@ public class PanelField extends JPanel{
             if(tempsTotal>=10000){   // Définir le départ du chrono. Arbitrairement 10s
                 tempsCourse+=25;
                 System.out.println("Temps de course : "+tempsCourse/1000+" sec");
-            }           
+            } 
+            
+            //comptage du nombre de tour
+            if(tempsCourse>30000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
+                position[1][0]=kart1.getX();    // position x actuelle
+                position[1][1]=kart1.getY();
+                compteTour(position);
+                position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
+                position[0][1]=kart1.getY();
+            }
         }
         
     }
@@ -218,7 +232,7 @@ public class PanelField extends JPanel{
         else if (ToucheHaut==false){
             kart1.ralentit(0);
         }
-        kart1.derapage(tourne,freine);
+        //kart1.derapage(tourne,freine);
         freine='n';}
         
         
@@ -227,7 +241,7 @@ public class PanelField extends JPanel{
         
         
         
-        if(alpha>Math.PI && alpha<2*Math.PI){
+       if(alpha>Math.PI && alpha<2*Math.PI){
             alpha=alpha-2*Math.PI;
         }else if(alpha<-Math.PI && alpha >-2*Math.PI){
             alpha=alpha+2*Math.PI;}
@@ -291,8 +305,24 @@ public class PanelField extends JPanel{
                 buffer.drawLine(x1,y1,x2,y2);    
             
         }
-        
-        
+                
+        //Ligne d'arrivée
+        if(tempsCourse>10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
+            buffer.setColor(Color.white);
+            for(int i=0; i<12;i+=2){
+                x1=this.m2SX(438.5+i, 175.5,fx, fy, 28, alpha, echelle);          
+                y1=this.m2SY(438.5+i, 175.5,fx,fy, 28, alpha, echelle);
+                buffer.fillRect(x1,y1,30,30);     
+            }   
+        }
+         
+        //ESSAI       
+        buffer.setColor(Color.white);
+            x1=this.m2SX(62-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
+            x2=this.m2SX(62-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
+            y1=this.m2SY(62-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
+            y2=this.m2SY(62-9-3.5, 175-5,fx, fy, 28, alpha, echelle);
+            buffer.drawLine(x1,y1,x2,y2); 
         
         /*int a=400;
         x1=this.m2SX(tabXext[a]+250, tabYext[a]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
@@ -340,6 +370,7 @@ public class PanelField extends JPanel{
              DY=Math.abs(my-yA);
             if (my-yA>=0){X=Math.cos(a)*DX-Math.sin(a)*DY; }
              else{X=Math.cos(a)*DX+Math.sin(a)*DY;}
+             
          } 
          
          return (int)(X*ech); 
@@ -373,27 +404,20 @@ public class PanelField extends JPanel{
             DY=Math.abs(my-yA);
             if (my-yA>=0){Y=Math.cos(a)*DY+Math.sin(a)*DX;}
             else{Y=-Math.cos(a)*DY+Math.sin(a)*DX;}
+            
         }
         
         return (int)(840-Y*ech); 
     }
     
-    
-    private class PanelField_this_keyAdapter extends KeyAdapter{
-          private PanelField adaptee;
-          PanelField_this_keyAdapter(PanelField adaptee){
-             this.adaptee=adaptee; 
-          }
-          public void keyPressed(KeyEvent e){
-              adaptee.this_keyPressed(e);
-          }
-          public void keyReleased(KeyEvent e){
-              adaptee.this_keyReleased(e);
-          }
-          
-          
-          
-      }
+     public void compteTour(double[][] pos){
+         if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
+             if(pos[0][1]<175 && pos[1][1]<=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
+                nbTours++;     
+            }
+        }
+    }
+   
       
       public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
