@@ -120,58 +120,14 @@ public class PanelField extends JPanel{
         
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
-        
-        /*for(int i=0; i<800; i++){         // Essai Helene a supprimer après
-            if(tabXext[i]==200){
-                System.out.println("i: "+i+", y: "+tabYext[i]);
-                }
-              
-             
-        }*/
-        
+
         position[0][0]=kart1.getX();
         position[0][1]=kart1.getY();
      
     }
     public void paint(Graphics g){
-       
-       
-       /* buffer.setColor( new Color(0, 150, 0) );
-        buffer.fillRect(0,0,1200,840);
-        buffer.setColor( Color.black );*/
-               
-      //Ellispe Extérieure
-       /*for(int i=0; i<800; i++){
-           
-           x1=this.m2SX((int)(tabXext[i]+250), (int)(tabYext[i]+175),0, hWind, hWind, 0, echelleKart);
-           x2=this.m2SX((int)(tabXext[i+1]+250), (int)(tabYext[i+1]+175),0, hWind, hWind, 0, echelleKart);
-           y1=this.m2SY((int)(tabXext[i]+250), (int)(tabYext[i]+175),0, hWind, hWind, 0, echelleKart);
-           y2=this.m2SY((int)(tabXext[i+1]+250), (int)(tabYext[i+1]+175),0, hWind, hWind, 0, echelleKart);
-           buffer.drawLine(x1,y1,x2,y2);
-            
-       }
-       
-       
-       // Ellispe Intérieure
-       for(int i=0; i<752; i++){
-           x1=this.m2SX((int)(tabXint[i]+250), (int)(tabYint[i]+175),0, hWind, hWind, 0, echelleKart);
-           x2=this.m2SX((int)(tabXint[i+1]+250), (int)(tabYint[i+1]+175),0, hWind, hWind, 0, echelleKart);
-           y1=this.m2SY((int)(tabXint[i]+250), (int)(tabYint[i]+175),0, hWind, hWind, 0, echelleKart);
-           y2=this.m2SY((int)(tabXint[i+1]+250), (int)(tabYint[i+1]+175),0, hWind, hWind, 0, echelleKart);
-           
-           buffer.drawLine(x1,y1,x2,y2);
-       }*/
-       
-        
-        /*int X=this.m2SX(kart1.getX()-0.5,kart1.getY()-1,0, hWind, hWind, 0, echelleKart);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()-1,0, hWind, hWind, 0, echelleKart);           // et dessin qui prend en compte le coin haut gauche
-        kart1.draw(buffer,X,Y);*/
-        //System.out.println(X+","+Y);
-        //Back.repaint();
         paintComponents(buffer);
         g.drawImage(ArrierePlan,0,0,this);
-        
-        
     }
     
     
@@ -189,13 +145,15 @@ public class PanelField extends JPanel{
             } 
             
             //comptage du nombre de tour
-            if(tempsCourse>30000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
+            if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 position[1][0]=kart1.getX();    // position x actuelle
                 position[1][1]=kart1.getY();
+                //System.out.println("X(t-1): "+position[0][0]+", Y(t-1): "+position[0][1]+", X(t): "+position[1][0]+", Y(t): "+position[1][1]);
                 compteTour(position);
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
+            System.out.println("Tour n°"+nbTours +" en cours" );
         }
         
     }
@@ -206,78 +164,56 @@ public class PanelField extends JPanel{
     
     public void boucle_principale_jeu(){
         if (tempsCourse>0){
-        if (ToucheBas){
-            freine='y';
-            kart1.freine();
-        }
-        if (ToucheGauche){
-            tourne='g';
-        }
-        else if (ToucheDroite){
-            tourne='d';
-        }
-        else{
-            tourne='0';
-        }
-        if (ToucheHaut && (ToucheGauche || ToucheDroite )) { 
-            kart1.avance(1); 
-        }
-        else if (ToucheHaut){
-            kart1.avance(0);
-        }
-        kart1.tourne(tourne);
-        if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){ 
-            kart1.ralentit(1); 
-        }
-        else if (ToucheHaut==false){
-            kart1.ralentit(0);
-        }
-        //kart1.derapage(tourne,freine);
-        freine='n';}
+            if (ToucheBas){
+                freine='y';
+                kart1.freine();
+            }
+            if (ToucheGauche){
+                tourne='g';
+            }
+            else if (ToucheDroite){
+                tourne='d';
+            }
+            else{
+                tourne='0';
+            }
+            if (ToucheHaut && (ToucheGauche || ToucheDroite )) { 
+                kart1.avance(1); 
+            }
+            else if (ToucheHaut){
+                kart1.avance(0);
+            }
+            kart1.tourne(tourne);
+            if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){ 
+                kart1.ralentit(1); 
+            }
+            else if (ToucheHaut==false){
+                kart1.ralentit(0);
+            }
+            //kart1.derapage(tourne,freine);
+            freine='n';}
         
         
         kart1.calculTheta();        
-       alpha=kart1.getTheta()-Math.PI/2;
-        
-        
-        
-       if(alpha>Math.PI && alpha<2*Math.PI){
-            alpha=alpha-2*Math.PI;
-        }else if(alpha<-Math.PI && alpha >-2*Math.PI){
-            alpha=alpha+2*Math.PI;}
+        alpha=kart1.getTheta()-Math.PI/2;
+    
         
         buffer.setColor( new Color(0, 150, 0) );
-       buffer.fillRect(0,0,1200,840);
+        buffer.fillRect(0,0,1200,840);
         buffer.setColor(Color.black);
         
         double fx,fy;
-        if(alpha>=0){    
-            fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))+alpha);
-            fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
-        }else{
-            fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))-alpha);
-            fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))-alpha);}
-       //System.out.println(fx+","+fy);
-        
-        
-       //double fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(20/Math.sqrt(20*20+21*21))+alpha);
-       //double fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(21/Math.sqrt(20*20+21*21))+alpha);
-       
-    
+        fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))+alpha);
+        fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
+
         
        //Ellispe Extérieure
        for(int i=0; i<800; i++){
-            //if((tabYext[i]+175)>=(fy-28)&&((tabYext[i]+175)<=(fy))){
-                x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
-                x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
-                y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
-                y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
-                buffer.drawLine(x1,y1,x2,y2);
-                //System.out.println("Je dessine pour i :"+i);
-            //}
-          //System.out.println(x1);
-              
-             
+            x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
+            x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
+            y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
+            y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
+            buffer.drawLine(x1,y1,x2,y2);
         }
                 
         // Ellispe Intérieure
@@ -307,38 +243,18 @@ public class PanelField extends JPanel{
         }
                 
         //Ligne d'arrivée
-        if(tempsCourse>10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
+        if(tempsCourse>10000){                   //affichage de la ligne d'arrivée à la place de la ligne de départ au bout de 10 sec  
             buffer.setColor(Color.white);
             for(int i=0; i<12;i+=2){
                 x1=this.m2SX(438.5+i, 175.5,fx, fy, 28, alpha, echelle);          
                 y1=this.m2SY(438.5+i, 175.5,fx,fy, 28, alpha, echelle);
                 buffer.fillRect(x1,y1,30,30);     
             }   
-        }
-         
-        //ESSAI       
-        buffer.setColor(Color.white);
-            x1=this.m2SX(62-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
-            x2=this.m2SX(62-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
-            y1=this.m2SY(62-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
-            y2=this.m2SY(62-9-3.5, 175-5,fx, fy, 28, alpha, echelle);
-            buffer.drawLine(x1,y1,x2,y2); 
-        
-        /*int a=400;
-        x1=this.m2SX(tabXext[a]+250, tabYext[a]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
-        x2=this.m2SX(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
-        y1=this.m2SY(tabXext[a]+250, tabYext[a]+175,fx,fy, 28, alpha, echelle);
-        y2=this.m2SY(tabXext[a+1]+250, tabYext[a+1]+175,fx, fy, 28, alpha, echelle);
-        System.out.println(tabXext[a]+","+tabYext[a]+","+x1+","+x2+","+y1+","+y2);
-        buffer.drawLine(x1,y1,x2,y2);*/
-        
+        }    
         
         int X=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
         int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
         kart1.draw(buffer,X,Y);
-        
-        
-        
         
         repaint();
         
@@ -354,26 +270,16 @@ public class PanelField extends JPanel{
      * @param ech le rapport pixel/metrique
      * @return la coordonée X**/
      public int m2SX(double mx,double my, double fx, double fy, int fh,double a,double ech){
-         double DX,DY,xA,yA,X;
-         if(a>=0){
-            xA=fx+fh*Math.sin(a);
-            yA=fy-fh*Math.cos(a);
-             DX=Math.abs(mx-xA);           
-            DY=my-yA;
-             if (mx-xA>=0){X=Math.cos(a)*DX+Math.sin(a)*DY;}
-             else {X=-Math.cos(a)*DX+Math.sin(a)*DY;}
+        double DX,DY,xA,yA,X;
+        xA=fx+fh*Math.sin(a);
+        yA=fy-fh*Math.cos(a);
+        DX=Math.abs(mx-xA);           
+        DY=my-yA;
+        
+        if (mx-xA>=0){X=Math.cos(a)*DX+Math.sin(a)*DY;}
+        else {X=-Math.cos(a)*DX+Math.sin(a)*DY;}
                    
-         }else {
-            xA=fx-fh*Math.sin(a);
-            yA=fy-fh*Math.cos(a);
-            DX=mx-xA;            
-             DY=Math.abs(my-yA);
-            if (my-yA>=0){X=Math.cos(a)*DX-Math.sin(a)*DY; }
-             else{X=Math.cos(a)*DX+Math.sin(a)*DY;}
-             
-         } 
-         
-         return (int)(X*ech); 
+        return (int)(X*ech); 
      }
     
      /** Convertit la coordonnée Y métrique en pixel d'une fenêtre donnée
@@ -387,32 +293,20 @@ public class PanelField extends JPanel{
       * @return la coordonée Y**/
     public int m2SY(double mx,double my, double fx, double fy, int fh,double a,double ech){
         double DX,DY,xA,yA,Y;
-        if(a>=0){
-            xA=fx+fh*Math.sin(a);
-            yA=fy-fh*Math.cos(a);
-            DX=Math.abs(mx-xA);            
-            DY=my-yA;
+        xA=fx+fh*Math.sin(a);
+        yA=fy-fh*Math.cos(a);
+        DX=Math.abs(mx-xA);            
+        DY=my-yA;
             
-            if (mx-xA>=0){Y=Math.cos(a)*DY-Math.sin(a)*DX;}
-            else {Y=Math.cos(a)*DY+Math.sin(a)*DX;}
-           
-            
-        }else {
-            xA=fx-fh*Math.sin(a);
-            yA=fy-fh*Math.cos(a);
-            DX=mx-xA;             
-            DY=Math.abs(my-yA);
-            if (my-yA>=0){Y=Math.cos(a)*DY+Math.sin(a)*DX;}
-            else{Y=-Math.cos(a)*DY+Math.sin(a)*DX;}
-            
-        }
+        if (mx-xA>=0){Y=Math.cos(a)*DY-Math.sin(a)*DX;}
+        else {Y=Math.cos(a)*DY+Math.sin(a)*DX;}
         
         return (int)(840-Y*ech); 
     }
     
      public void compteTour(double[][] pos){
          if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
-             if(pos[0][1]<175 && pos[1][1]<=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
+             if(pos[0][1]<175 && pos[1][1]>=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
                 nbTours++;     
             }
         }
