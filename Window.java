@@ -24,7 +24,7 @@ public class Window extends JFrame {
         final int HAUTPIX=840;
         final int HAUTM=350;
         double echelle =(double)(LARGPIX)/(double)(LARGM);;
-        PanelField field=new PanelField(echelle,HAUTM,1);
+        PanelField field=new PanelField(echelle,HAUTM,1,1);
         boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
         
         

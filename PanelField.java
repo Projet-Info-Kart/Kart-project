@@ -66,6 +66,7 @@ public class PanelField extends JPanel{
     double DY;
     
     int numJoueur;
+    int modeJoueur;
     
     int x1=0;
     int x2=0;
@@ -75,37 +76,48 @@ public class PanelField extends JPanel{
     JButton Back = new JButton("Back to main menu");
     JLabel textTour=new JLabel("Nombre de tours : "+nbTours);
     JLabel textChrono=new JLabel("Temps : "+tempsCourse);
+    JLabel textBonus=new JLabel("Bonus : ");
+    Font textFont=new Font(textTour.getFont().getName(),textTour.getFont().getStyle(),20);
        
-    public PanelField(double ech, int h, int nJ){
+    public PanelField(double ech, int h, int nJ, int mJ){
         
         setLayout(new GridLayout (15,1));
-        //setLayout(new BorderLayout());
+            
+        textTour.setForeground(Color.white);
+        textChrono.setForeground(Color.red);
+        textBonus.setForeground(Color.white);
         
         //Règle la taille du texte dans chaque button
         Font newButtonBackFont=new Font(Back.getFont().getName(),Back.getFont().getStyle(),20);
         Back.setFont(newButtonBackFont);
         
-       textTour.setForeground(Color.white);
-       textChrono.setForeground(Color.white);
+        textTour.setFont(textFont);
+        textBonus.setFont(textFont);
+        
+        Font chronoFont=new Font(textTour.getFont().getName(),textTour.getFont().getStyle(),40);
+        textChrono.setFont(chronoFont);
+
         
         add(Back);
         add(textTour);
         add(textChrono);
+        add(textBonus);
         
         numJoueur=nJ;
+        modeJoueur=mJ;
         
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
-        buffer=ArrierePlan.getGraphics();
+        buffer=ArrierePlan.getGraphics();     
         
-        //ToucheHaut=false;ToucheBas=false;ToucheDroite=false;ToucheGauche=false;
-        //this.addKeyListener(new PanelField_this_keyAdapter(this));
-        
-        
-        kart1=new Kart(439,169,0,1,15,10,0.1,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+        if(numJoueur==1){
+            kart1=new Kart(439,169,0,1,15,10,0.1,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+        }else kart1=new Kart(441,174,0,1,15,10,0.1,150,1,1);
         
         hWind =h;
-        echelleKart=ech;
-        echelle=30;
+
+       // echelle=30;
+        if (modeJoueur==1) {echelle=30;}
+        else {echelle=15;}
         
         //demi ellipse extérieure positive
         for (int i =0; i<400; i++){
@@ -138,10 +150,20 @@ public class PanelField extends JPanel{
         
         Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
         Items.add(kart1);
-        //Cadeau c=new Cadeau(444,175,1,0);//test avec un cadeau
-        //Items.add(c);
-        Bombe b=new Bombe(444,175,1,0);//test avec un cadeau
-        Items.add(b);
+        
+        //Création des lignes de Cadeaux 
+        for (int i=0;i<12;i+=3){                            // les cadeaux d'une seule ligne ne se suivent pas ds la liste 
+            Items.add(new Cadeau(350,tabYext[300]-i,1,0));
+            Items.add(new Cadeau(150,tabYext[100]-i,1,0));
+            Items.add(new Cadeau(50+i,175,1,0));
+            Items.add(new Cadeau(150,tabYext[700]+i,1,0));
+            Items.add(new Cadeau(350,tabYext[500]+i,1,0));
+        }
+        
+        Cadeau c=new Cadeau(444,175,1,0);//test avec un cadeau
+        Items.add(c);
+        //Bombe b=new Bombe(444,175,1,0);//test avec un cadeau
+        //Items.add(b);
         
         
         Timer timer=new Timer(25,new TimerAction());
@@ -168,22 +190,30 @@ public class PanelField extends JPanel{
                 tempsTotal+=25;
             }
             
-            if(tempsTotal>=10000){   // Définir le départ du chrono. Arbitrairement 10s
+            if(tempsTotal<1500){textChrono.setText("A vos marques...");}
+            else if (tempsTotal<3000&&tempsTotal>1500){textChrono.setText("Prêt...");}
+            else if(tempsTotal<3500&&tempsTotal>3000){textChrono.setText("Go!");}
+            else if (tempsTotal>=3500){textChrono.setText("Temps : "+tempsCourse/1000 + "s");
+                                       textChrono.setFont(textFont);
+                                       textChrono.setForeground(Color.white);}
+            
+            
+            if(tempsTotal>=3000){   // Définir le départ du chrono. Arbitrairement 10s
                 tempsCourse+=25;
-                System.out.println("Temps de course : "+tempsCourse/1000+" sec");
             } 
             
             //comptage du nombre de tour
             if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 position[1][0]=kart1.getX();    // position x actuelle
                 position[1][1]=kart1.getY();
-                //System.out.println("X(t-1): "+position[0][0]+", Y(t-1): "+position[0][1]+", X(t): "+position[1][0]+", Y(t): "+position[1][1]);
                 compteTour(position);
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
             textTour.setText("Nombre de tours : "+nbTours);
-            textChrono.setText("Temps : "+tempsCourse/1000 + "s");
+            
+            
+            
         }
         
     }
@@ -259,14 +289,14 @@ public class PanelField extends JPanel{
                 kart1.calculTheta();
                 kart1.coordCoinsX();
                 kart1.coordCoinsY();
-            }
+            
             for (int i=0;i<Items.size();i++){
                 Item O=Items.get(i);
                 O.setTemps();
                 O.move();
             }
         
-            for (int i=numJoueur;i<Items.size();i++){
+           /* for (int i=numJoueur;i<Items.size();i++){
                 Item O = Items.get(i);
                 for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
                     Item l=Items.get(j);
@@ -279,10 +309,10 @@ public class PanelField extends JPanel{
                     if (O.collision(l)){
                         O.doCollision(l);
                     }
-            }
-            }
+                }
+            }*/
         
-            for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
+           for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
                 Item O=Items.get(i);
                 if (O.nomObjet=="BOMBE"){
                     if (((Bombe)O).quandExploser()){
@@ -300,7 +330,8 @@ public class PanelField extends JPanel{
                     Items.remove(k);
                     k--; 
                 }
-            }        
+            }     
+        }
     }
     
     public void boucle_principale_affichage(){
@@ -366,9 +397,11 @@ public class PanelField extends JPanel{
         for (int k=0; k<Items.size(); k++) {
             
             Item it = Items.get(k);
-            int X=this.m2SX(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-            int Y=this.m2SY(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
+            int X=this.m2SX(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle);       
+            int Y=this.m2SY(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle); 
             it.draw(buffer,X,Y);
+            System.out.println(k+": X="+it.getX()+", Y="+it.getY());
+            if(it.nomObjet=="CADEAU"){((Cadeau)it).rendVisible();}
         }
         
         
@@ -419,6 +452,11 @@ public class PanelField extends JPanel{
         
         return (int)(840-Y*ech); 
     }
+    
+     public void setModeJoueur(int mj){
+         this.modeJoueur=mj; 
+    }
+    
     
      public void compteTour(double[][] pos){
          if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
