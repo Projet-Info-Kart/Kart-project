@@ -1,5 +1,6 @@
 
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -13,6 +14,7 @@ import java.awt.image.BufferedImage;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -63,16 +65,24 @@ public class PanelField extends JPanel{
     int y2=0;
     
     JButton Back = new JButton("Back to main menu");
+    JLabel textTour=new JLabel("Nombre de tours : "+nbTours);
+    JLabel textChrono=new JLabel("Temps : "+tempsCourse);
        
     public PanelField(double ech, int h, int nJ){
         
-        setLayout(new GridLayout (2,2,550,700));
+        setLayout(new GridLayout (15,1));
+        //setLayout(new BorderLayout());
         
         //Règle la taille du texte dans chaque button
         Font newButtonBackFont=new Font(Back.getFont().getName(),Back.getFont().getStyle(),20);
         Back.setFont(newButtonBackFont);
         
+       textTour.setForeground(Color.white);
+       textChrono.setForeground(Color.white);
+        
         add(Back);
+        add(textTour);
+        add(textChrono);
         
         numJoueur=nJ;
         
@@ -154,6 +164,8 @@ public class PanelField extends JPanel{
                 position[0][1]=kart1.getY();
             }
             System.out.println("Tour n°"+nbTours +" en cours" );
+            textTour.setText("Nombre de tours : "+nbTours);
+            textChrono.setText("Temps : "+tempsCourse/1000 + "s");
         }
         
     }
@@ -190,7 +202,7 @@ public class PanelField extends JPanel{
             else if (ToucheHaut==false){
                 kart1.ralentit(0);
             }
-            //kart1.derapage(tourne,freine);
+            kart1.derapage(tourne,freine);
             freine='n';}
         
         
