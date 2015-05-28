@@ -4,7 +4,7 @@ import java.awt.Graphics;
 public class Missile extends Projectile {
     
     public Missile(double x, double y,double dx, double dy){
-        super(x,y,dx,dy);
+        super(x,y,dx,dy,Color.green);
         this.frontSpeed=25;
         
         this.nomObjet="MISSILE";
@@ -23,9 +23,14 @@ public class Missile extends Projectile {
     
 
     
-    public void drawGraphTest(Graphics g){
+    /*public void drawGraphTest(Graphics g){
         g.setColor(Color.green);
         g.fillOval((int)x,(int)(576-y),15,15);//rayon du cercle à adapter aver l'échelle
     }
+    
+    public void draw(Graphics g,int x,int y){
+        g.setColor(Color.green);
+        g.fillOval(x,y,15,15);//rayon du cercle à adapter aver l'échelle
+    }*/
     
 }

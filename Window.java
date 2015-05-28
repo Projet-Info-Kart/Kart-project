@@ -132,7 +132,7 @@ public class Window extends JFrame {
             
         }
         
-        void this_keyPressed(KeyEvent e){
+     void this_keyPressed(KeyEvent e){
             int code= e.getKeyCode();
             System.out.println("Key pressed : "+code);
             

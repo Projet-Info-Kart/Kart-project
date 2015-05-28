@@ -60,16 +60,18 @@ public class graphTest extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(900,576);
         this.setVisible(true);
-        Rectangle Ecran=new Rectangle(getInsets().left,getInsets().top,getSize().width-getInsets().right-getInsets().left,getSize().height-getInsets().bottom-getInsets().top);
+        //Rectangle Ecran=new Rectangle(getInsets().left,getInsets().top,getSize().width-getInsets().right-getInsets().left,getSize().height-getInsets().bottom-getInsets().top);
         kart1=new Kart(300,300,0,1,15,10,0.1,150,1,1);
         kart2=new Kart(400,400,0,1,15,10,0.1,150,1,1);
         this.addKeyListener(new graphTest_this_keyAdapter(this));
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();
+        
         Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
         Items.add(kart1);
         Cadeau c=new Cadeau(320,320,1,0);//test avec un cadeau
         Items.add(c);
+        
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
         
@@ -277,7 +279,7 @@ public class graphTest extends JFrame {
         //g.drawImage(ArrierePlan,0,0,this);
         for (int k=0; k<Items.size(); k++) {
             Item O = Items.get(k);
-            O.drawGraphTest(buffer);
+            //O.drawGraphTest(buffer);
         }
         // dessine une seule fois le buffer dans le Panel
         g.drawImage(ArrierePlan,0,0,this);

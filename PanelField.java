@@ -12,6 +12,8 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,7 +46,7 @@ public class PanelField extends JPanel{
     int toucheBas=70;
     int toucheGauche=81;
     int toucheDroite=68;
-    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
+    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche,Shift,Space;
     
     boolean debutJeu=false;
     double tempsCourse=0;
@@ -56,6 +58,12 @@ public class PanelField extends JPanel{
     char freine;
     int xpos=0;
     Kart kart1;
+    
+    static ArrayList <Item> Items;//liste de tous les objets actifs
+    double X; //le x du kart que l'on  récupérera une fois par boucle pour éviter d'avoir à appeler tous les temps les accesseurs
+    double Y;
+    double DX;
+    double DY;
     
     int numJoueur;
     
@@ -128,6 +136,14 @@ public class PanelField extends JPanel{
             c=c+2;
         }  
         
+        Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
+        Items.add(kart1);
+        //Cadeau c=new Cadeau(444,175,1,0);//test avec un cadeau
+        //Items.add(c);
+        Bombe b=new Bombe(444,175,1,0);//test avec un cadeau
+        Items.add(b);
+        
+        
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
 
@@ -136,6 +152,7 @@ public class PanelField extends JPanel{
      
     }
     public void paint(Graphics g){
+        
         paintComponents(buffer);
         g.drawImage(ArrierePlan,0,0,this);
     }
@@ -145,6 +162,8 @@ public class PanelField extends JPanel{
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
             boucle_principale_jeu();
+            boucle_principale_affichage();
+            
             if(debutJeu){
                 tempsTotal+=25;
             }
@@ -163,7 +182,6 @@ public class PanelField extends JPanel{
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
-            System.out.println("Tour n°"+nbTours +" en cours" );
             textTour.setText("Nombre de tours : "+nbTours);
             textChrono.setText("Temps : "+tempsCourse/1000 + "s");
         }
@@ -173,42 +191,122 @@ public class PanelField extends JPanel{
     public void activeCompteur(){
        debutJeu=true; 
     }
-    
+      
     public void boucle_principale_jeu(){
-        if (tempsCourse>0){
-            if (ToucheBas){
-                freine='y';
-                kart1.freine();
+            X=kart1.getX();
+            Y=kart1.getY();
+            DX=kart1.getdx();
+            DY=kart1.getdy();
+            if(tempsCourse>0){
+                if (ToucheBas){
+                    freine='y';
+                    kart1.freine();
+                }
+                if (ToucheGauche){
+                    tourne='g';
+                }
+                else if (ToucheDroite){
+                    tourne='d';
+                }
+                else{
+                    tourne='0';
+                }
+                if (ToucheHaut && (ToucheGauche || ToucheDroite )) {
+                    kart1.avance(1); 
+                }
+                else if (ToucheHaut){
+                    kart1.avance(0);
+                }
+                    kart1.tourne(tourne);
+                if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){
+                    kart1.ralentit(1); 
+                }
+                else if (ToucheHaut==false){
+                    kart1.ralentit(0);
+                }
+                //kart1.derapage(tourne,freine);
+                freine='n';
+                if (kart1.Bonus()){//Si le kart a un bonus dispo
+                    if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
+                        if (kart1.getNomBonus()=="MISSILE"){
+                            if (Shift){
+                                Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
+                                Items.add(m);
+                                kart1.setABonus(false);
+                            }
+                            else if (Space){
+                                Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
+                                Items.add(m);
+                                kart1.setABonus(false);
+                            }
+                        }
+                        else if (kart1.getNomBonus()=="BANANE"){
+                            if (Space){
+                                Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
+                                Items.add(b);
+                                kart1.setABonus(false);
+                            }
+                        }
+                        else if (kart1.getNomBonus()=="BOMBE"){
+                            if (Space){
+                                Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
+                                Items.add(b);
+                                kart1.setABonus(false);
+                            }
+                        }
+                    }
+                }
+                kart1.calculTheta();
+                kart1.coordCoinsX();
+                kart1.coordCoinsY();
             }
-            if (ToucheGauche){
-                tourne='g';
+            for (int i=0;i<Items.size();i++){
+                Item O=Items.get(i);
+                O.setTemps();
+                O.move();
             }
-            else if (ToucheDroite){
-                tourne='d';
-            }
-            else{
-                tourne='0';
-            }
-            if (ToucheHaut && (ToucheGauche || ToucheDroite )) { 
-                kart1.avance(1); 
-            }
-            else if (ToucheHaut){
-                kart1.avance(0);
-            }
-            kart1.tourne(tourne);
-            if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){ 
-                kart1.ralentit(1); 
-            }
-            else if (ToucheHaut==false){
-                kart1.ralentit(0);
-            }
-            kart1.derapage(tourne,freine);
-            freine='n';}
         
+            for (int i=numJoueur;i<Items.size();i++){
+                Item O = Items.get(i);
+                for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
+                    Item l=Items.get(j);
+                    if (O.collision(l)){
+                        O.doCollision(l);
+                    }
+                }
+                for (int j=i+1;j<Items.size();j++){//puis avec les autres bonus
+                    Item l=Items.get(j);
+                    if (O.collision(l)){
+                        O.doCollision(l);
+                    }
+            }
+            }
         
+            for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
+                Item O=Items.get(i);
+                if (O.nomObjet=="BOMBE"){
+                    if (((Bombe)O).quandExploser()){
+                        ((Bombe)O).explosion();
+                    }
+                }
+                if(O.nomObjet=="CADEAU"){
+                    ((Cadeau)O).rendVisible();
+                }
+            }
+            //Garbage collector
+            for (int k=numJoueur; k<Items.size(); k++) {
+                Item O = Items.get(k);
+                if (O.actif==false) {
+                    Items.remove(k);
+                    k--; 
+                }
+            }        
+    }
+    
+    public void boucle_principale_affichage(){
         kart1.calculTheta();        
         alpha=kart1.getTheta()-Math.PI/2;
-    
+        
         
         buffer.setColor( new Color(0, 150, 0) );
         buffer.fillRect(0,0,1200,840);
@@ -219,8 +317,8 @@ public class PanelField extends JPanel{
         fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
 
         
-       //Ellispe Extérieure
-       for(int i=0; i<800; i++){
+        //Ellispe Extérieure
+        for(int i=0; i<800; i++){
             x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
             x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
             y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
@@ -264,9 +362,15 @@ public class PanelField extends JPanel{
             }   
         }    
         
-        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
-        kart1.draw(buffer,X,Y);
+        
+        for (int k=0; k<Items.size(); k++) {
+            
+            Item it = Items.get(k);
+            int X=this.m2SX(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
+            int Y=this.m2SY(it.getX()-0.5,it.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
+            it.draw(buffer,X,Y);
+        }
+        
         
         repaint();
         
@@ -339,6 +443,20 @@ public class PanelField extends JPanel{
               }else if (code==90){
                   ToucheHaut=true;
               }
+              else if (code==16){
+                  Shift=true;
+              }
+              else if (code==32){
+                  Space=true;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }
           }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=true;
@@ -349,17 +467,32 @@ public class PanelField extends JPanel{
               }else if (code==38){
                   ToucheHaut=true;
               }
+              else if (code==101){
+                  Shift=true;
+              }
+              else if (code==98){
+                  Space=true;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }    
           }
           
           
-          if (ToucheHaut && ToucheBas){
-              ToucheHaut=false;
-              ToucheBas=false;
-          }
-          if (ToucheGauche && ToucheDroite){
-              ToucheGauche=false;
-              ToucheDroite=false;
-          }
+          
       }
 
       void this_keyReleased(KeyEvent e){
@@ -375,7 +508,12 @@ public class PanelField extends JPanel{
                   ToucheBas=false;
               }else if (code==90){
                   ToucheHaut=false;
+              }else if (code==16){
+                  Shift=false;
+              }else if (code==32){
+                  Space=false;
               }
+              
           }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=false;
@@ -385,6 +523,10 @@ public class PanelField extends JPanel{
                   ToucheBas=false;
               }else if (code==38){
                   ToucheHaut=false;
+              }else if (code==101){
+                  Shift=false;
+              }else if (code==98){
+                  Space=false;
               }
           }
           

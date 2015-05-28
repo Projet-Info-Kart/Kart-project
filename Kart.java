@@ -298,13 +298,13 @@ public class Kart extends Item {
         //System.out.println("coeff="+coeff);
     }
     
-    public void drawGraphTest(Graphics g){
+  /*  public void drawGraphTest(Graphics g){
         
         g.drawImage(image,(int)(x),(int)(576-y),null);
         g.setColor(Color.red);
         g.drawLine((int)x,(int)(576-y),(int)(x+dx*20),(int)((576-(y+dy*20))));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
     }
-    
+    */
     public void draw(Graphics g, int ax, int ay){
             
             g.drawImage(image,ax,ay,null);
@@ -312,20 +312,6 @@ public class Kart extends Item {
             g.drawLine(ax,ay,(int)(ax+dx*20),(int)(ay-dy*20));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
         }
     
-    public double getX(){
-        return x;
-    }
-    public double getY(){
-        return y;
-    }
-    
-    public void setX(double x){
-        this.x=x;
-    }
-    
-    public void setY(double y){
-        this.y=y;
-    }
     
     public double getdx(){
         return dx;

@@ -48,8 +48,8 @@ public abstract class Item {
     
     public abstract void move();//différent du avance(int i) de kart
     
-    public abstract void drawGraphTest(Graphics g);
-        
+   // public abstract void drawGraphTest(Graphics g);
+    public abstract void draw(Graphics g,int x, int y);
     
     public void setTemps(){// augmente le tempsVie de l'objet
            this.tempsVie++; 
@@ -64,6 +64,20 @@ public abstract class Item {
         return tempsVie;
     }
     
-
+    public double getX(){
+        return x;    
+    }
+    
+    public double getY(){
+        return y;    
+    }
+    
+    public void setX(double x){
+        this.x=x;
+    }
+    
+    public void setY(double y){
+        this.y=y;
+    }
     
 }
