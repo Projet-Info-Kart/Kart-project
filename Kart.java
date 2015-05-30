@@ -32,7 +32,7 @@ public class Kart extends Item {
     
     
     
-    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence ){//pas encore ts les attributs
+    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence){//pas encore ts les attributs
         super(x,y,dx,dy);
         h=2;//hauteur de 2m
         l=1;//largeur de 1m
@@ -393,28 +393,63 @@ public class Kart extends Item {
     
     public void setAdherence(double a){
         this.adherence=a;
+    }
+    
+    public void setPoids(double a){
+        this.poids=a;
+    }
+    
+    public void setImage(int numkart, int nbJoueur){
+        if(nbJoueur==1){
+            if (numkart==1){
+                try{
+                    image= ImageIO.read(new File("kart1.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart1.png");
+                    System.exit(1);
+                }
+            }
+            else if (numkart==2){
+                try{
+                    image= ImageIO.read(new File("kart2.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart2.png");
+                    System.exit(1);
+                }
+            }
+            else{
+                try{
+                    image= ImageIO.read(new File("kart3.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart3.png");
+                    System.exit(1);
+                }
+            }
         }
-    public void setImage(int i){
-        if (i==1){
-            try{
-                image= ImageIO.read(new File("kart1.png"));
-            }catch (IOException e){
-                System.out.println("Could not load image file"+"kart1.png");
-                System.exit(1);
+        else{
+            if (numkart==1){
+                try{
+                    image= ImageIO.read(new File("kart12.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart1.png");
+                    System.exit(1);
+                }
             }
-        }else if (i==2){
-            try{
-                image= ImageIO.read(new File("kart2.png"));
-            }catch (IOException e){
-                System.out.println("Could not load image file"+"kart2.png");
-                System.exit(1);
+            else if (numkart==2){
+                try{
+                    image= ImageIO.read(new File("kart22.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart2.png");
+                    System.exit(1);
+                }
             }
-        }else{
-            try{
-                image= ImageIO.read(new File("kart3.png"));
-            }catch (IOException e){
-                System.out.println("Could not load image file"+"kart3.png");
-                System.exit(1);
+            else{
+                try{
+                    image= ImageIO.read(new File("kart32.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart3.png");
+                    System.exit(1);
+                }
             }
         }
     }

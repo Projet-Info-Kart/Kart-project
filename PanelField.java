@@ -77,6 +77,9 @@ public class PanelField extends JPanel{
        
     public PanelField(int h, int nJ, int mJ){
         
+        numJoueur=nJ;
+        modeJoueur=mJ;
+        
         setLayout(new GridLayout (15,1));
             
         textTour.setForeground(Color.white);
@@ -95,12 +98,13 @@ public class PanelField extends JPanel{
 
         
         add(Back);
-        add(textTour);
-        add(textChrono);
-        add(textBonus);
+        if(numJoueur==1){           // pas besoin de l'afficher en double dans le mode 2 joueurs
+            add(textTour);
+            add(textChrono);
+            add(textBonus);
+        }
         
-        numJoueur=nJ;
-        modeJoueur=mJ;
+        
         
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();     
@@ -474,7 +478,7 @@ public class PanelField extends JPanel{
      
     public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
-          //System.out.println("Key pressed : "+code);
+          System.out.println("Key pressed : "+code);
           
           if(numJoueur==1){               // Joueur 1 : pavé QZDS
               if (code==68){

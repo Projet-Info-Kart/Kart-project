@@ -3,6 +3,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JFrame;
 
 public class Window3 extends JFrame{
@@ -11,7 +14,7 @@ public class Window3 extends JFrame{
     final int HAUTM=350;
     
     PanelField field1=new PanelField(HAUTM,1,3);
-    PanelField field2=new PanelField(HAUTM,1,3);
+    PanelField field2=new PanelField(HAUTM,2,3);
     
     public Window3(){
         setTitle("Pro Kart Racing 2015");
@@ -27,6 +30,9 @@ public class Window3 extends JFrame{
         field1.setVisible(true);
         field2.setVisible(true);
         
+        this.addKeyListener(new Window3_this_keyAdapter(this));
+        this.setFocusable(true);
+        
         field1.Back.addActionListener(new ActionListener(){
                public void actionPerformed(ActionEvent actionEvent){
                    new Window().setVisible(true);
@@ -41,4 +47,26 @@ public class Window3 extends JFrame{
                }
            });
     }
-}
+    
+        private class Window3_this_keyAdapter extends KeyAdapter{
+                private Window3 adaptee;
+                Window3_this_keyAdapter(Window3 adaptee){
+                   this.adaptee=adaptee; 
+                }
+                public void keyPressed(KeyEvent e){
+                    field1.this_keyPressed(e);
+                    field2.this_keyPressed(e);
+                    
+                }
+                public void keyReleased(KeyEvent e){
+                    field1.this_keyReleased(e);
+                    field2.this_keyReleased(e);
+                   
+                }
+                
+                
+                
+            }
+    }
+
+      

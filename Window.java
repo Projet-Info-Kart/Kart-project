@@ -115,18 +115,19 @@ public class Window extends JFrame {
        
     public void choixKart(){
         int position=selectionKart.getPosition();
+        field.kart1.setImage(position,1);//1 correspond au mode 1 joueur
         switch (position) {
-            case 1 :field.kart1.setImage(1);
-                    field.kart1.setAdherence(1);
+            case 1 :field.kart1.setAdherence(1);
                     field.kart1.setMaxSpeed(15);
+                    field.kart1.setPoids(150);
                     break;
-            case 2 :field.kart1.setImage(2);
-                    field.kart1.setAdherence(0.95);
+            case 2 :field.kart1.setAdherence(0.95);
                     field.kart1.setMaxSpeed(15.5);
+                    field.kart1.setPoids(160);
                     break;
-            case 3 :field.kart1.setImage(3);
-                    field.kart1.setAdherence(1.1);
+            case 3 :field.kart1.setAdherence(1.1);
                     field.kart1.setMaxSpeed(14.5);
+                    field.kart1.setPoids(140);
                     break;
         }
     } 

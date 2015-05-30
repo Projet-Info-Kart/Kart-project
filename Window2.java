@@ -87,6 +87,8 @@ public class Window2 extends JFrame {
                 //si les deux joueurs ont choisi leur personnage, le jeu se lance.
                 if (choice == 2){
                     wind.setVisible(true);
+                    wind.field1.activeCompteur();
+                    wind.field2.activeCompteur();
                     dispose();
                 }
                 
@@ -102,7 +104,10 @@ public class Window2 extends JFrame {
                 
                 if (choice == 2){
                     wind.setVisible(true);
+                    wind.field1.activeCompteur();
+                    wind.field2.activeCompteur();
                     dispose();
+                    
                 }
                 
                 repaint();
@@ -117,18 +122,19 @@ public class Window2 extends JFrame {
         int position;
         if(i==1){position=selectionKart1.getPosition();}
         else{position=selectionKart2.getPosition();}
+        field.kart1.setImage(position,2);//2 correspond au mode 2 joueurs
         switch (position) {
-            case 1 :field.kart1.setImage(1);
-                    field.kart1.setAdherence(1);
+            case 1 :field.kart1.setAdherence(1);
                     field.kart1.setMaxSpeed(15);
+                    field.kart1.setPoids(150);
                     break;
-            case 2 :field.kart1.setImage(2);
-                    field.kart1.setAdherence(0.95);
+            case 2 :field.kart1.setAdherence(0.95);
                     field.kart1.setMaxSpeed(15.5);
+                    field.kart1.setPoids(160);
                     break;
-            case 3 :field.kart1.setImage(3);
-                    field.kart1.setAdherence(1.1);
+            case 3 :field.kart1.setAdherence(1.1);
                     field.kart1.setMaxSpeed(14.5);
+                    field.kart1.setPoids(140);
                     break;
         }
     } 
