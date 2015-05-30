@@ -222,7 +222,6 @@ public class PanelField extends JPanel{
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
-
             textTour.setText("Nombre de tours : "+nbTours);
             
         }
@@ -258,14 +257,14 @@ public class PanelField extends JPanel{
                 else if (ToucheHaut){
                     kart1.avance(0);
                 }
-                    kart1.tourne(tourne);
+                kart1.tourne(tourne);
                 if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){
                     kart1.ralentit(1); 
                 }
                 else if (ToucheHaut==false){
                     kart1.ralentit(0);
                 }
-                //kart1.derapage(tourne,freine);
+                kart1.derapage(tourne,freine);
                 freine='n';
               if (kart1.Bonus()){//Si le kart a un bonus dispo
                     if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
@@ -307,7 +306,7 @@ public class PanelField extends JPanel{
                 O.move();
             }
         
-          /* for (int i=numJoueur;i<Items.size();i++){
+           for (int i=numJoueur;i<Items.size();i++){
                 Item O = Items.get(i);
                 for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
                     Item l=Items.get(j);
@@ -321,7 +320,7 @@ public class PanelField extends JPanel{
                         O.doCollision(l);
                     }
                 }
-            }*/
+            }
         
            for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
                 Item O=Items.get(i);

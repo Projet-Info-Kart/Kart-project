@@ -25,7 +25,7 @@ public class Kart extends Item {
     private double coeffFrein;//coeff de freinage qui fait augmenter la fCent lorsqu'on freine;
     private double dxDir,dyDir;
     private int compt;//compteur dérapage
-
+    private double thetaOri;//le theta quand le kart a commence à déraper
     private boolean aBonus;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
     private static String nomBonus;//PAREIL
 
@@ -60,17 +60,17 @@ public class Kart extends Item {
         }*/
     }
     public void tourne(char a){
-        double theta=0;
+        double thetaTourne=0;
         if (a=='g'&& derapeGauche==false && derapeDroite==false && frontSpeed>0.2){
             //System.out.println("tourne à gauche");
             double dxc=-dy;
             double dyc=dx;
             double xc=x+rayCourb*dxc;
             double yc=y+rayCourb*dyc;
-            theta=Math.atan2((y-yc),(x-xc));
+            thetaTourne=Math.atan2((y-yc),(x-xc));
             double dtheta=frontSpeed*(0.025)/rayCourb;; //le 0.025 vient du timer à 25ms, c'est dt
-            x=xc+rayCourb*Math.cos(theta+dtheta);
-            y=yc+rayCourb*Math.sin(theta+dtheta);  
+            x=xc+rayCourb*Math.cos(thetaTourne+dtheta);
+            y=yc+rayCourb*Math.sin(thetaTourne+dtheta);  
             double norme=Math.sqrt((x-xc)*(x-xc)+(y-yc)*(y-yc));
             dy=(x-xc)/norme;
             dx=-(y-yc)/norme;
@@ -82,10 +82,10 @@ public class Kart extends Item {
             double dyc=-dx;
             double xc=x+rayCourb*dxc;
             double yc=y+rayCourb*dyc;
-            theta=Math.atan2((y-yc),(x-xc));
+            thetaTourne=Math.atan2((y-yc),(x-xc));
             double dtheta=frontSpeed*(0.025)/rayCourb; 
-            x=xc+rayCourb*Math.cos(theta-dtheta);
-            y=yc+rayCourb*Math.sin(theta-dtheta); 
+            x=xc+rayCourb*Math.cos(thetaTourne-dtheta);
+            y=yc+rayCourb*Math.sin(thetaTourne-dtheta); 
             double norme=Math.sqrt((x-xc)*(x-xc)+(y-yc)*(y-yc));
             dy=-(x-xc)/norme;
             dx=(y-yc)/norme;
@@ -94,13 +94,13 @@ public class Kart extends Item {
     
     public void avance(int i){// si i=0, le kart avance normalement, sinon il se contente d'augmenter la vitesse sans modifier la position
         if (derapeDroite || derapeGauche ){
-           frontSpeed=frontSpeed-0.06; //Quand le kart dérape il perd de la vitesse
+           frontSpeed=frontSpeed-0.05; //Quand le kart dérape il perd de la vitesse
         }
-        else if (frontSpeed<maxSpeed-6){//le kart a plus de mal à accélerer à haute vitesse
+        else if (frontSpeed<maxSpeed-6){
             frontSpeed=frontSpeed+maxAcc; 
         }
         else{
-            frontSpeed=frontSpeed+maxAcc-0.03;
+            frontSpeed=frontSpeed+maxAcc-0.03;//le kart a plus de mal à accélerer à haute vitesse
             if (frontSpeed>maxSpeed){
                 frontSpeed=maxSpeed;
             }
@@ -117,7 +117,10 @@ public class Kart extends Item {
     }
     
     public void ralentit(int i){
-         if (frontSpeed>0.5){
+         if (frontSpeed>0.2 && (derapeDroite || derapeGauche)){
+            frontSpeed=frontSpeed-0.14;
+         }
+         else if (frontSpeed>0.2){
             frontSpeed=frontSpeed-0.1;
         }
         else{
@@ -138,8 +141,9 @@ public class Kart extends Item {
         }
     }
     
-    public void derapage(char tourne,char freine){ 
-        double fAdm=adherence*1815;//limite de dérapage à 11 m/s d'un kart avec un poids moyen (150kg) et une adhérence neutre (1), Rc=10m
+    public void derapage(char tourne,char freine){
+        this.calculTheta();
+        double fAdm=adherence*2000;//limite de dérapage à 12 m/s d'un kart avec un poids moyen (150kg) et une adhérence neutre (1), Rc=10m
         if (derapeDroite==false && derapeGauche==false){//coef de contrebraquage neutre si le kart ne dérape pas
             contrebraque=1;
         }                                       
@@ -167,21 +171,26 @@ public class Kart extends Item {
         else{
             coeffFrein=1;
         }
-        fCent=coeffFrein*contrebraque*poids*frontSpeed*frontSpeed/(rayCourb/15);//calcul de la force centrifuge
+        fCent=coeffFrein*contrebraque*poids*frontSpeed*frontSpeed/(rayCourb);//calcul de la force centrifuge
         if (fCent<fAdm*coeff){
             derapeGauche=false;
             derapeDroite=false;
-            coeff=0.2; //reset du coeff à 0.2 à la fin du dérapage
-            compt=0;//reset du compteur dérapage
-            
+            coeff=0.4; //reset du coeff à 0.4 à la fin du dérapage
+            compt=0;//reset du compteur dérapage  
         }
+        if(tourne=='0' && derapeGauche==false && derapeDroite==false){
+            compt=0;
+        }
+        
         if ((tourne=='g' && fCent>fAdm && derapeDroite==false) || (derapeGauche && fCent>fAdm*coeff )){
-            coeff=0.2;//reset du coeff 0.2
+            coeff=0.4;//reset du coeff 0.2
             compt++;
-            if (compt>10){//le dérapage ne s'active que si on a commencé à tourner depuis un certain temps 
+            if (compt>12){//le dérapage ne s'active que si on a commencé à tourner depuis un certain temps 
                 if (derapeGauche==false){
                     dxDir=dx;//les directions vers lesquelles la voiture roulait quand elle a commencé à déraper
                     dyDir=dy;
+                    thetaOri=theta;
+                    System.out.println("hahaha dx="+dx+" et dy="+dy);
                 }
                 derapeGauche=true;
                 //System.out.println("fadm="+fAdm+" fCent="+fCent);
@@ -190,61 +199,34 @@ public class Kart extends Item {
                 double normex=1;
                 double normey=1;
                 //System.out.println("dérape gauche");
-                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;//0.0008 normalement
+                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;//0.0008 normalement
                 System.out.println("THETADIR="+thetaDir);
-                //System.out.println("frontSpeed="+frontSpeed);
-                if (dyDir!=0){                                   //cette partie permet de calculer les nouveaux dxDir et dyDir de la voiture=direction vers laquelle la voiture roule         
-                    normexDir=Math.tan(thetaDir)*(dyDir/Math.abs(dyDir));
-                }else if (dxDir<0){
-                    normexDir=-1;
-                }
-                if (dxDir!=0){
-                    normeyDir=Math.tan(thetaDir)*(dxDir/Math.abs(dxDir));
-                }else if (dyDir>0){
-                    normexDir=-1;
-                }
-                System.out.println("normexDir="+normexDir);
-                System.out.println("normeyDir="+normeyDir);
-                double x2Dir=x+dxDir-Math.cos(thetaDir)*normexDir;
-                double y2Dir=y+dyDir+Math.sin(thetaDir)*normeyDir;
-                double normeDir=Math.sqrt((x2Dir-x)*(x2Dir-x)+(y2Dir-y)*(y2Dir-y));
-                dxDir=(x2Dir-x)/normeDir;
-                dyDir=(y2Dir-y)/normeDir;
+                dxDir=Math.cos(thetaDir+thetaOri);
+                dyDir=Math.sin(thetaDir+thetaOri);
+                thetaOri=thetaOri+thetaDir;
                 System.out.println("dxDir="+dxDir);
                 System.out.println("dyDir="+dyDir);
                 
-                double thetad=frontSpeed*0.01*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
-                System.out.println("THETA= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
-                if (dy!=0){                                   //cette partie permet de calculer les nouveaux dx et dy=orientation de la voiture        
-                    normex=Math.tan(thetad)*(dy/Math.abs(dy));
-                }else if (dx<0){
-                    normex=-1;
-                }
-                if (dx!=0){
-                    normey=Math.tan(thetad)*(dx/Math.abs(dx));
-                }else if (dy>0){
-                    normex=-1;
-                }
-                double x2=x+dx-Math.cos(thetad)*normex;
-                double y2=y+dy+Math.sin(thetad)*normey;
-                double norme=Math.sqrt((x2-x)*(x2-x)+(y2-y)*(y2-y));
-                dx=(x2-x)/norme;
-                dy=(y2-y)/norme;
+                double thetad=frontSpeed*0.0015*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
+                System.out.println("THETAPivot= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
+                dx=Math.cos(thetad+theta);
+                dy=Math.sin(thetad+theta);
                 
                 if (Math.abs(Math.atan2(dy,dx)-Math.atan2(dyDir,dxDir))>0.5){//il derape plus longtemps si la direction de la voiture est différente de celle vers laquelle elle dérape
-                    coeff=0.1;
+                    coeff=0.15;
                 }
             }
             
         }
         
         else if ((tourne=='d' && fCent>fAdm && derapeGauche==false)|| (derapeDroite && fCent>fAdm*coeff)){
-            coeff=0.2;
+            coeff=0.4;
             compt++;
-            if (compt>10){
+            if (compt>12){
                 if (derapeDroite==false){
                     dxDir=dx;//les directions vers lesquelles la voiture roulait quand elle a commencé à déraper
                     dyDir=dy;
+                    thetaOri=theta;
                 }
                 derapeDroite=true;
                 //System.out.println("dérape droite");
@@ -253,53 +235,28 @@ public class Kart extends Item {
                 double normex=1;
                 double normey=1;
                 
-                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;
+                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;
                 System.out.println("THETADIR="+thetaDir);
-                if (dyDir!=0){                                           
-                    normexDir=Math.tan(thetaDir)*(dyDir/Math.abs(dyDir));
-                }else if (dxDir<0){
-                    normexDir=-1;
-                }
-                if (dxDir!=0){
-                    normeyDir=Math.tan(thetaDir)*(dxDir/Math.abs(dxDir));
-                }else if (dyDir>0){
-                    normexDir=-1;
-                }
-                double x2Dir=x+dxDir+Math.cos(thetaDir)*normexDir;
-                double y2Dir=y+dyDir-Math.sin(thetaDir)*normeyDir;
-                double normeDir=Math.sqrt((x2Dir-x)*(x2Dir-x)+(y2Dir-y)*(y2Dir-y));
-                dxDir=(x2Dir-x)/normeDir;
-                dyDir=(y2Dir-y)/normeDir;
-                
-                double thetad=frontSpeed*0.01*coeffFrein;
+                dxDir=Math.cos(-thetaDir+thetaOri);
+                dyDir=Math.sin(-thetaDir+thetaOri);
+                thetaOri=thetaOri+thetaDir;
+                double thetad=frontSpeed*0.0015*coeffFrein;
                 System.out.println("THETAD= "+thetad);
-                if (dy!=0){
-                    normex=Math.tan(thetad)*(dy/Math.abs(dy));
-                }else if (dx<0){
-                    normex=-1;
-                }
-                if (dx!=0){
-                    normey=Math.tan(thetad)*(dx/Math.abs(dx));
-                }else if (dy>0){
-                    normex=-1;
-                }
-                double x2=x+dx+Math.cos(thetad)*normex;
-                double y2=y+dy-Math.sin(thetad)*normey;
-                double norme=Math.sqrt((x2-x)*(x2-x)+(y2-y)*(y2-y));
-                dx=(x2-x)/norme;
-                dy=(y2-y)/norme;
+                dx=Math.cos(-thetad+theta);
+                dy=Math.sin(-thetad+theta);
                 //System.out.println("norme="+norme);
                // System.out.println("dx="+dx);
                // System.out.println("dy="+dy);
             
                 if (Math.abs(Math.atan2(dy,dx)-Math.atan2(dyDir,dxDir))>0.5){
-                    coeff=0.1;
+                    coeff=0.15;
                 }
             }
         }
         if (derapeDroite || derapeGauche){
             x=x+dxDir*(frontSpeed*0.025);
             y=y+dyDir*(frontSpeed*0.025);
+            System.out.println("lololollol");
         }
         //System.out.println("coeff="+coeff);
     }
