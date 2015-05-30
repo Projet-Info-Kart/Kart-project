@@ -209,13 +209,14 @@ public class PanelField extends JPanel{
             } 
             
             //comptage du nombre de tour
-            if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 position[1][0]=kart1.getX();    // position x actuelle
                 position[1][1]=kart1.getY();
+            if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 compteTour(position);
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
+
             textTour.setText("Nombre de tours : "+nbTours);
             
         }
@@ -224,7 +225,9 @@ public class PanelField extends JPanel{
     
     /**Detecte l'ouverture du Panel et lance le chrono du temps total*/
     public void activeCompteur(){
-       debutJeu=true; 
+       debutJeu=true;
+       tempsTotal=0;
+       tempsCourse=0;
     }
       
     /**Gère les déplacements du kart et les bonus */
@@ -263,6 +266,7 @@ public class PanelField extends JPanel{
                 kart1.derapage(tourne,freine);
                 freine='n';
               if (kart1.Bonus()){//Si le kart a un bonus dispo
+                  textBonus.setText("Bonus : "+kart1.getNomBonus());
                     if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
                         if (kart1.getNomBonus()=="MISSILE"){
                             if (Shift){
@@ -291,10 +295,15 @@ public class PanelField extends JPanel{
                             }
                         }
                     }
-                }
+              }else{textBonus.setText("Bonus : ");}
+              
                 kart1.calculTheta();
                 kart1.coordCoinsX();
                 kart1.coordCoinsY();
+                
+            if (kart1.colliMurs()){
+                kart1.doColliMurs();
+            }
             
            for (int i=0;i<Items.size();i++){
                 Item O=Items.get(i);
@@ -302,7 +311,7 @@ public class PanelField extends JPanel{
                 O.move();
             }
         
-           for (int i=numJoueur;i<Items.size();i++){
+          for (int i=numJoueur;i<Items.size();i++){
                 Item O = Items.get(i);
                 for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
                     Item l=Items.get(j);
@@ -340,7 +349,7 @@ public class PanelField extends JPanel{
         }
     }
     
-    /**Gère l'affichage des différents éléments (ellispes, karts, bonus, */
+    /**Gère l'affichage des différents éléments (ellispes, karts, bonus...) */
     public void boucle_principale_affichage(){
         kart1.calculTheta();        
         alpha=kart1.getTheta()-Math.PI/2;
@@ -357,20 +366,40 @@ public class PanelField extends JPanel{
         
         //Ellispe Extérieure
         for(int i=0; i<800; i++){
-            x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
-            x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
-            y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
-            y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
-            buffer.drawLine(x1,y1,x2,y2);
+            if (i%2==0){
+                buffer.setColor(Color.red);
+                x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }else{
+                buffer.setColor(Color.black);
+                x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }    
         }
                 
         // Ellispe Intérieure
         for(int i=0; i<752; i++){
-            x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
-            x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
-            y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
-            y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
-            buffer.drawLine(x1,y1,x2,y2);
+            if (i%2==0){
+                buffer.setColor(Color.red);
+                x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }else{
+                buffer.setColor(Color.black);
+                x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }
         }
         
         buffer.setColor(Color.white);
@@ -409,26 +438,23 @@ public class PanelField extends JPanel{
         }    
         
         
+        //Affichage des objets autres que les kart = Cadeaux
+        for (int k=modeJoueur; k<Items.size(); k++) {
+            Item it = Items.get(k);
+            int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
+            int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
+            it.draw(buffer,X,Y,echelle);
+            
+        }
+        
+        //Affichage des karts : différents des cadeaux car x,y correspondent au milieu du kart =/= coin haut gauche
+        for(int k=0;k<modeJoueur;k++){
+            Item it = Items.get(k);
+            int X=this.m2SX(it.getX()-0.5,it.getY()-0.85,fx, fy, 28, alpha, echelle);       
+            int Y=this.m2SY(it.getX()-0.5,it.getY()-0.85,fx, fy, 28, alpha, echelle); 
+            it.draw(buffer,X,Y,echelle);
+        }
 
-        
-        
-            //Affichage des objets autres que les kart = Cadeaux
-            for (int k=modeJoueur; k<Items.size(); k++) {
-                Item it = Items.get(k);
-                int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
-                int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
-                it.draw(buffer,X,Y,echelle);
-                        
-            }
-                    
-                    //Affichage des karts : différents des cadeaux car x,y correspondent au milieu du kart =/= coin haut gauche
-            for(int k=0;k<modeJoueur;k++){
-                Item it = Items.get(k);
-                int X=this.m2SX(it.getX()-0.5,it.getY()-1,fx, fy, 28, alpha, echelle);       
-                int Y=this.m2SY(it.getX()-0.5,it.getY()-1,fx, fy, 28, alpha, echelle); 
-                it.draw(buffer,X,Y,echelle);
-                }
-        
         repaint();
         
     }
@@ -509,14 +535,6 @@ public class PanelField extends JPanel{
               else if (code==32){
                   Space=true;
               }
-              if (ToucheHaut && ToucheBas){
-                  ToucheHaut=false;
-                  ToucheBas=false;
-              }
-              if (ToucheGauche && ToucheDroite){
-                  ToucheGauche=false;
-                  ToucheDroite=false;
-              }
           }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=true;
@@ -532,23 +550,23 @@ public class PanelField extends JPanel{
               }
               else if (code==98){
                   Space=true;
-              }
-              if (ToucheHaut && ToucheBas){
-                  ToucheHaut=false;
-                  ToucheBas=false;
-              }
-              if (ToucheGauche && ToucheDroite){
-                  ToucheGauche=false;
-                  ToucheDroite=false;
-              }
-              if (ToucheHaut && ToucheBas){
-                  ToucheHaut=false;
-                  ToucheBas=false;
-              }
-              if (ToucheGauche && ToucheDroite){
-                  ToucheGauche=false;
-                  ToucheDroite=false;
               }    
+          }
+          if (ToucheHaut && ToucheBas){
+              ToucheHaut=false;
+              ToucheBas=false;
+          }
+          if (ToucheGauche && ToucheDroite){
+              ToucheGauche=false;
+              ToucheDroite=false;
+          }
+          if (ToucheHaut && ToucheBas){
+              ToucheHaut=false;
+              ToucheBas=false;
+          }
+          if (ToucheGauche && ToucheDroite){
+              ToucheGauche=false;
+              ToucheDroite=false;
           }
           
           

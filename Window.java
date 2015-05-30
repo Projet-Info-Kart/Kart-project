@@ -14,11 +14,12 @@ public class Window extends JFrame {
 
         PanelMenu menu = new PanelMenu();
         PanelSelectionKart selectionKart = new PanelSelectionKart();
+        Tutorial tuto = new Tutorial();
         CardLayout layout = new CardLayout();
         SplitPanelSelection splitSelection = new SplitPanelSelection();   
         final int LARGPIX=1200;
         final int HAUTPIX=840;
-        PanelField field=new PanelField(1,1);        
+        PanelField field=new PanelField(1,1);
         
     public Window(){
         setTitle("Pro Kart Racing 2015");
@@ -31,9 +32,11 @@ public class Window extends JFrame {
         add(field);
         add(selectionKart);
         add(splitSelection);
+        add(tuto);
         field.setVisible(false);
         selectionKart.setVisible(false);
         splitSelection.setVisible(false);
+        tuto.setVisible(false);
  
         this.addKeyListener(new Window_this_keyAdapter(this));
         this.setFocusable(true);
@@ -47,6 +50,23 @@ public class Window extends JFrame {
             }
         });
      
+        //action du button Tuto 
+        menu.Tuto.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent actionEvent){
+                menu.setVisible(false);
+                tuto.setVisible(true);
+                repaint();
+            }
+        });   
+        
+        tuto.Back.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent actionEvent){
+                tuto.setVisible(false);
+                menu.setVisible(true);
+                repaint();
+            }
+        });
+        
         //action du menu Exit        
         menu.Exit.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent actionEvent){
@@ -84,6 +104,7 @@ public class Window extends JFrame {
                 selectionKart.setVisible(false);
                 field.setVisible(true);
                 field.activeCompteur();
+                
                 repaint();
             }
         });
@@ -102,9 +123,12 @@ public class Window extends JFrame {
             public void actionPerformed(ActionEvent actionEvent){
                 field.setVisible(false);
                 menu.setVisible(true);
+                new Window();
+                dispose();
                 repaint();
             }
         });
+
 
         setVisible(true);
     }
