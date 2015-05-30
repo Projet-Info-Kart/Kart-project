@@ -82,7 +82,7 @@ public class Window2 extends JFrame {
             public void actionPerformed(ActionEvent actionEvent){
                 choice=choice+1;
                 selectionKart1.Pick.setEnabled(false);
-                choixKart(wind.field1,wind.field2,1);
+                choixKart(wind.field1,1);
                 
                 //si les deux joueurs ont choisi leur personnage, le jeu se lance.
                 if (choice == 2){
@@ -100,7 +100,7 @@ public class Window2 extends JFrame {
             public void actionPerformed(ActionEvent actionEvent){
                 choice=choice+1;
                 selectionKart2.Pick.setEnabled(false);
-                choixKart(wind.field2,wind.field1,2);
+                choixKart(wind.field2,2);
                 
                 if (choice == 2){
                     wind.setVisible(true);
@@ -118,34 +118,24 @@ public class Window2 extends JFrame {
         
     }
     
-    public void choixKart(PanelField field,PanelField fieldAdv, int i){
+    public void choixKart(PanelField field, int i){
         int position;
         if(i==1){position=selectionKart1.getPosition();}
         else{position=selectionKart2.getPosition();}
         field.kart1.setImage(position,2);//2 correspond au mode 2 joueurs
-        fieldAdv.kartAdv.setImage(position,2); // on modifie également le kart adversaire dans l'autre panel
         switch (position) {
             case 1 :field.kart1.setAdherence(1);
-                    fieldAdv.kartAdv.setAdherence(1);
                     field.kart1.setMaxSpeed(15);
-                    fieldAdv.kartAdv.setMaxSpeed(15);
                     field.kart1.setPoids(150);
-                    fieldAdv.kartAdv.setPoids(150);
                     break;
         
             case 2 :field.kart1.setAdherence(0.95);
-                    fieldAdv.kartAdv.setAdherence(0.95);
                     field.kart1.setMaxSpeed(15.5);
-                    fieldAdv.kartAdv.setMaxSpeed(15.5);
                     field.kart1.setPoids(160);
-                    fieldAdv.kartAdv.setPoids(160);
                     break;
             case 3 :field.kart1.setAdherence(1.1);
-                    fieldAdv.kartAdv.setAdherence(1.1);
                     field.kart1.setMaxSpeed(14.5);
-                    fieldAdv.kartAdv.setMaxSpeed(14.5);
                     field.kart1.setPoids(140);
-                    fieldAdv.kartAdv.setPoids(140);
                     break;
         }
     } 

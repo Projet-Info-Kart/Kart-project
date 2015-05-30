@@ -22,6 +22,7 @@ public class PanelMenu extends JPanel {
     
     JButton OnePlayer = new JButton("1 Player");
     JButton TwoPlayers = new JButton("2 Players");
+    JButton Tuto = new JButton("Tutorial");
     JButton Exit = new JButton ("Exit");
     
     Image backgroundMenu; 
@@ -37,6 +38,9 @@ public class PanelMenu extends JPanel {
         TwoPlayers.setMaximumSize(new Dimension (350,100));
         TwoPlayers.setPreferredSize(new Dimension (350,100));
         
+        Tuto.setMaximumSize(new Dimension (350,100));
+        Tuto.setPreferredSize(new Dimension (350,100));
+        
         Exit.setMaximumSize(new Dimension (350,100));
         Exit.setPreferredSize(new Dimension (350,100));
         
@@ -44,19 +48,23 @@ public class PanelMenu extends JPanel {
         Font newButtonFont=new Font(OnePlayer.getFont().getName(),OnePlayer.getFont().getStyle(),40);
         OnePlayer.setFont(newButtonFont);
         TwoPlayers.setFont(newButtonFont);
+        Tuto.setFont(newButtonFont);
         Exit.setFont(newButtonFont);
             
             
         OnePlayer.setAlignmentX(Component.CENTER_ALIGNMENT);
         TwoPlayers.setAlignmentX(Component.CENTER_ALIGNMENT);
+        Tuto.setAlignmentX(Component.CENTER_ALIGNMENT);
         Exit.setAlignmentX(Component.CENTER_ALIGNMENT);
         
         //Placer des espaces entre les button
         add(Box.createVerticalGlue());
         add(OnePlayer);
-        add(Box.createRigidArea(new Dimension(0,20)));
+        add(Box.createRigidArea(new Dimension(0,15)));
         add(TwoPlayers);
-        add(Box.createRigidArea(new Dimension(0,20)));
+        add(Box.createRigidArea(new Dimension(0,15)));
+        add(Tuto);
+        add(Box.createRigidArea(new Dimension(0,15)));
         add(Exit);
         add(Box.createVerticalGlue());
         
@@ -74,6 +82,7 @@ public class PanelMenu extends JPanel {
        g.drawImage(backgroundMenu,0,0,getWidth(),getHeight(),null); //paint l'image en adapatant la taille de l'écran
        OnePlayer.repaint();
        TwoPlayers.repaint();
+       Tuto.repaint();
        Exit.repaint();
     }
 }

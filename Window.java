@@ -18,9 +18,7 @@ public class Window extends JFrame {
         SplitPanelSelection splitSelection = new SplitPanelSelection();   
         final int LARGPIX=1200;
         final int HAUTPIX=840;
-        PanelField field=new PanelField(1,1);
-        boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
-        
+        PanelField field=new PanelField(1,1);        
         
     public Window(){
         setTitle("Pro Kart Racing 2015");
