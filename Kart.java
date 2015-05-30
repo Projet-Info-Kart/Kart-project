@@ -405,8 +405,8 @@ public class Kart extends Item {
         this.poids=a;
     }
     
-    public void setImage(int numkart, int nbJoueur){
-        if(nbJoueur==1){
+    public void setImage(int numkart, int modeJoueur){
+        if(modeJoueur==1){
             if (numkart==1){
                 try{
                     image= ImageIO.read(new File("kart1.png"));

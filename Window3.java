@@ -11,15 +11,14 @@ import javax.swing.JFrame;
 public class Window3 extends JFrame{
     final int LARGPIX=1200;
     final int HAUTPIX=840;
-    final int HAUTM=350;
     
-    PanelField field1=new PanelField(HAUTM,1,3);
-    PanelField field2=new PanelField(HAUTM,2,3);
+    PanelField field1=new PanelField(1,2);
+    PanelField field2=new PanelField(2,2);
     
     public Window3(){
         setTitle("Pro Kart Racing 2015");
         setSize(LARGPIX,HAUTPIX); 
-        GridLayout layout = new GridLayout(1, 2);
+        GridLayout layout = new GridLayout(1, 2,10,0);// 10 correspond à un espace de 10 pixel entre 2 colonnes= séparation entre les panels
         setLayout(layout);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

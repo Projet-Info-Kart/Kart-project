@@ -17,10 +17,8 @@ public class Window extends JFrame {
         CardLayout layout = new CardLayout();
         SplitPanelSelection splitSelection = new SplitPanelSelection();   
         final int LARGPIX=1200;
-        final int LARGM=500;
         final int HAUTPIX=840;
-        final int HAUTM=350;
-        PanelField field=new PanelField(HAUTM,1,1);
+        PanelField field=new PanelField(1,1);
         boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
         
         
