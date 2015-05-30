@@ -1,6 +1,4 @@
 
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,12 +6,12 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+import java.util.ArrayList;
+
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -44,7 +42,7 @@ public class PanelField extends JPanel{
     int toucheBas=70;
     int toucheGauche=81;
     int toucheDroite=68;
-    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche;
+    boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche,Shift,Space;
     
     boolean debutJeu=false;
     double tempsCourse=0;
@@ -57,7 +55,14 @@ public class PanelField extends JPanel{
     int xpos=0;
     Kart kart1;
     
+    static ArrayList <Item> Items;//liste de tous les objets actifs
+    double X; //le x du kart que l'on  récupérera une fois par boucle pour éviter d'avoir à appeler tous les temps les accesseurs
+    double Y;
+    double DX;
+    double DY;
+    
     int numJoueur;
+    int modeJoueur;
     
     int x1=0;
     int x2=0;
@@ -66,38 +71,55 @@ public class PanelField extends JPanel{
     
     JButton Back = new JButton("Back to main menu");
     JLabel textTour=new JLabel("Nombre de tours : "+nbTours);
-    JLabel textChrono=new JLabel("Temps : "+tempsCourse);
+    JLabel textChrono=new JLabel("");
+    JLabel textBonus=new JLabel("Bonus : ");
+    Font textFont=new Font(textTour.getFont().getName(),textTour.getFont().getStyle(),20);
        
-    public PanelField(double ech, int h, int nJ){
+    public PanelField(int h, int nJ, int mJ){
+        
+        numJoueur=nJ;
+        modeJoueur=mJ;
         
         setLayout(new GridLayout (15,1));
-        //setLayout(new BorderLayout());
+            
+        textTour.setForeground(Color.white);
+        textChrono.setForeground(Color.red);
+        textBonus.setForeground(Color.white);
         
         //Règle la taille du texte dans chaque button
         Font newButtonBackFont=new Font(Back.getFont().getName(),Back.getFont().getStyle(),20);
         Back.setFont(newButtonBackFont);
         
-       textTour.setForeground(Color.white);
-       textChrono.setForeground(Color.white);
+        textTour.setFont(textFont);
+        textBonus.setFont(textFont);
+        
+        Font chronoFont=new Font(textTour.getFont().getName(),textTour.getFont().getStyle(),40);
+        textChrono.setFont(chronoFont);
+
         
         add(Back);
-        add(textTour);
-        add(textChrono);
+        if(numJoueur==1){           // pas besoin de l'afficher en double dans le mode 2 joueurs
+            add(textTour);
+            add(textChrono);
+            add(textBonus);
+        }
         
-        numJoueur=nJ;
+        
         
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
-        buffer=ArrierePlan.getGraphics();
+        buffer=ArrierePlan.getGraphics();     
         
-        //ToucheHaut=false;ToucheBas=false;ToucheDroite=false;ToucheGauche=false;
-        //this.addKeyListener(new PanelField_this_keyAdapter(this));
-        
-        
-        kart1=new Kart(439,169,0,1,15,10,0.1,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+        if(modeJoueur==1){kart1=new Kart(444,174,0,1,15,10,0.1,150,1);}
+        else{
+            if(numJoueur==1){
+                kart1=new Kart(439,169,0,1,15,10,0.1,150,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+            }else {kart1=new Kart(441,174,0,1,15,10,0.1,150,1);}
+        }
         
         hWind =h;
-        echelleKart=ech;
-        echelle=30;
+
+        if (modeJoueur==1) {echelle=30;}
+        else {echelle=15;}
         
         //demi ellipse extérieure positive
         for (int i =0; i<400; i++){
@@ -128,6 +150,18 @@ public class PanelField extends JPanel{
             c=c+2;
         }  
         
+        Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
+        Items.add(kart1);
+        
+        //Création des lignes de Cadeaux 
+        for (int i=2;i<12;i+=2){                            // les cadeaux d'une seule ligne ne se suivent pas ds la liste 
+           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,283.25-i,1,0));
+           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,282.75-i,1,0));
+           Items.add(new Cadeau(50+i,175,1,0));
+           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
+           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
+        }      
+        
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
 
@@ -136,6 +170,7 @@ public class PanelField extends JPanel{
      
     }
     public void paint(Graphics g){
+        
         paintComponents(buffer);
         g.drawImage(ArrierePlan,0,0,this);
     }
@@ -145,27 +180,40 @@ public class PanelField extends JPanel{
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
             boucle_principale_jeu();
+            boucle_principale_affichage();
+            
             if(debutJeu){
                 tempsTotal+=25;
             }
             
-            if(tempsTotal>=100){   // Définir le départ du chrono. Arbitrairement 10s
+
+            if(tempsTotal<2000&&tempsTotal>1000){textChrono.setText("A vos marques...");}
+            else if (tempsTotal<3500&&tempsTotal>2000){textChrono.setText("Prêt...");}
+            else if(tempsTotal<4000&&tempsTotal>3500){textChrono.setText("Go!");}
+            else if (tempsTotal>=4000){
+                int t1=(int)(tempsCourse/60000);
+                int t2=(int)((tempsCourse%60000)/1000);
+                textChrono.setText("Temps : "+t1 + "min "+t2+"s "+((tempsCourse%60000)%1000));
+                textChrono.setFont(textFont);
+                textChrono.setForeground(Color.white);}
+            
+            
+            if(tempsTotal>=3500){   // Définir le départ du chrono. Arbitrairement 3.5s
                 tempsCourse+=25;
-                //System.out.println("Temps de course : "+tempsCourse/1000+" sec");
+
             } 
             
             //comptage du nombre de tour
             if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 position[1][0]=kart1.getX();    // position x actuelle
                 position[1][1]=kart1.getY();
-                //System.out.println("X(t-1): "+position[0][0]+", Y(t-1): "+position[0][1]+", X(t): "+position[1][0]+", Y(t): "+position[1][1]);
                 compteTour(position);
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
-            //System.out.println("Tour n°"+nbTours +" en cours" );
+
             textTour.setText("Nombre de tours : "+nbTours);
-            textChrono.setText("Temps : "+tempsCourse/1000 + "s");
+            
         }
         
     }
@@ -173,42 +221,123 @@ public class PanelField extends JPanel{
     public void activeCompteur(){
        debutJeu=true; 
     }
-    
+      
     public void boucle_principale_jeu(){
-        if (tempsCourse>0){
-            if (ToucheBas){
-                freine='y';
-                kart1.freine();
+            X=kart1.getX();
+            Y=kart1.getY();
+            DX=kart1.getdx();
+            DY=kart1.getdy();
+            if(tempsCourse>0){
+                if (ToucheBas){
+                    freine='y';
+                    kart1.freine();
+                }
+                if (ToucheGauche){
+                    tourne='g';
+                }
+                else if (ToucheDroite){
+                    tourne='d';
+                }
+                else{
+                    tourne='0';
+                }
+                if (ToucheHaut && (ToucheGauche || ToucheDroite )) {
+                    kart1.avance(1); 
+                }
+                else if (ToucheHaut){
+                    kart1.avance(0);
+                }
+                    kart1.tourne(tourne);
+                if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){
+                    kart1.ralentit(1); 
+                }
+                else if (ToucheHaut==false){
+                    kart1.ralentit(0);
+                }
+                //kart1.derapage(tourne,freine);
+                freine='n';
+              if (kart1.Bonus()){//Si le kart a un bonus dispo
+                    if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
+                        if (kart1.getNomBonus()=="MISSILE"){
+                            if (Shift){
+                                Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
+                                Items.add(m);
+                                kart1.setABonus(false);
+                            }
+                            else if (Space){
+                                Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
+                                Items.add(m);
+                                kart1.setABonus(false);
+                            }
+                        }
+                        else if (kart1.getNomBonus()=="BANANE"){
+                            if (Space){
+                                Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
+                                Items.add(b);
+                                kart1.setABonus(false);
+                            }
+                        }
+                        else if (kart1.getNomBonus()=="BOMBE"){
+                            if (Space){
+                                Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
+                                Items.add(b);
+                                kart1.setABonus(false);
+                            }
+                        }
+                    }
+                }
+                kart1.calculTheta();
+                kart1.coordCoinsX();
+                kart1.coordCoinsY();
+            
+           for (int i=0;i<Items.size();i++){
+                Item O=Items.get(i);
+                O.setTemps();
+                O.move();
             }
-            if (ToucheGauche){
-                tourne='g';
-            }
-            else if (ToucheDroite){
-                tourne='d';
-            }
-            else{
-                tourne='0';
-            }
-            if (ToucheHaut && (ToucheGauche || ToucheDroite )) { 
-                kart1.avance(1); 
-            }
-            else if (ToucheHaut){
-                kart1.avance(0);
-            }
-            kart1.tourne(tourne);
-            if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){ 
-                kart1.ralentit(1); 
-            }
-            else if (ToucheHaut==false){
-                kart1.ralentit(0);
-            }
-            kart1.derapage(tourne,freine);
-            freine='n';}
         
+          /* for (int i=numJoueur;i<Items.size();i++){
+                Item O = Items.get(i);
+                for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
+                    Item l=Items.get(j);
+                    if (O.collision(l)){
+                        O.doCollision(l);
+                    }
+                }
+                for (int j=i+1;j<Items.size();j++){//puis avec les autres bonus
+                    Item l=Items.get(j);
+                    if (O.collision(l)){
+                        O.doCollision(l);
+                    }
+                }
+            }*/
         
+           for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
+                Item O=Items.get(i);
+                if (O.nomObjet=="BOMBE"){
+                    if (((Bombe)O).quandExploser()){
+                        ((Bombe)O).explosion();
+                    }
+                }
+                if(O.nomObjet=="CADEAU"){
+                    ((Cadeau)O).rendVisible();
+                }
+            }
+            //Garbage collector
+            for (int k=numJoueur; k<Items.size(); k++) {
+                Item O = Items.get(k);
+                if (O.actif==false) {
+                    Items.remove(k);
+                    k--; 
+                }
+            }   
+        }
+    }
+    
+    public void boucle_principale_affichage(){
         kart1.calculTheta();        
         alpha=kart1.getTheta()-Math.PI/2;
-    
+        
         
         buffer.setColor( new Color(0, 150, 0) );
         buffer.fillRect(0,0,1200,840);
@@ -219,13 +348,14 @@ public class PanelField extends JPanel{
         fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
 
         
-       //Ellispe Extérieure
-       for(int i=0; i<800; i++){
+        //Ellispe Extérieure
+        for(int i=0; i<800; i++){
             x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
             x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      // +0.5
             y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
             y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
             buffer.drawLine(x1,y1,x2,y2);
+            
         }
                 
         // Ellispe Intérieure
@@ -240,6 +370,13 @@ public class PanelField extends JPanel{
         //Ligne de départ
         if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
             buffer.setColor(Color.white);
+            if(modeJoueur==1){
+                    x1=this.m2SX(450, 175,fx, fy, 28, alpha, echelle);       
+                    x2=this.m2SX(438, 175,fx, fy, 28, alpha, echelle);      
+                    y1=this.m2SY(450, 175,fx,fy, 28, alpha, echelle);
+                    y2=this.m2SY(438, 175,fx, fy, 28, alpha, echelle);
+                    buffer.drawLine(x1,y1,x2,y2);  }
+            else{
                 x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
                 x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
@@ -250,7 +387,8 @@ public class PanelField extends JPanel{
                 x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450-6, 175,fx,fy, 28, alpha, echelle);
                 y2=this.m2SY(450-9, 175,fx, fy, 28, alpha, echelle);
-                buffer.drawLine(x1,y1,x2,y2);    
+                buffer.drawLine(x1,y1,x2,y2);
+            }
             
         }
                 
@@ -264,9 +402,21 @@ public class PanelField extends JPanel{
             }   
         }    
         
-        int X=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       // 15 et 30 du au décalage du x,y qui sont au centre du kart
-        int Y=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);           // et dessin qui prend en compte le coin haut gauche
-        kart1.draw(buffer,X,Y);
+        
+        
+        
+        for (int k=numJoueur; k<Items.size(); k++) {
+            
+            Item it = Items.get(k);
+            int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
+            int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
+            it.draw(buffer,X,Y);
+            
+        }
+        
+        int Xkart=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       
+        int Ykart=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle); 
+        kart1.draw(buffer,Xkart,Ykart);
         
         repaint();
         
@@ -316,18 +466,22 @@ public class PanelField extends JPanel{
         return (int)(840-Y*ech); 
     }
     
-     public void compteTour(double[][] pos){
+    public void setModeJoueur(int mj){
+         this.modeJoueur=mj; 
+    }
+    
+    
+    public void compteTour(double[][] pos){
          if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
              if(pos[0][1]<175 && pos[1][1]>=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
                 nbTours++;     
             }
         }
     }
-   
-      
-      public void this_keyPressed(KeyEvent e){
+     
+    public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
-          //System.out.println("Key pressed : "+code);
+          System.out.println("Key pressed : "+code);
           
           if(numJoueur==1){               // Joueur 1 : pavé QZDS
               if (code==68){
@@ -339,6 +493,20 @@ public class PanelField extends JPanel{
               }else if (code==90){
                   ToucheHaut=true;
               }
+              else if (code==16){
+                  Shift=true;
+              }
+              else if (code==32){
+                  Space=true;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }
           }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=true;
@@ -349,20 +517,35 @@ public class PanelField extends JPanel{
               }else if (code==38){
                   ToucheHaut=true;
               }
+              else if (code==101){
+                  Shift=true;
+              }
+              else if (code==98){
+                  Space=true;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }
+              if (ToucheHaut && ToucheBas){
+                  ToucheHaut=false;
+                  ToucheBas=false;
+              }
+              if (ToucheGauche && ToucheDroite){
+                  ToucheGauche=false;
+                  ToucheDroite=false;
+              }    
           }
           
           
-          if (ToucheHaut && ToucheBas){
-              ToucheHaut=false;
-              ToucheBas=false;
-          }
-          if (ToucheGauche && ToucheDroite){
-              ToucheGauche=false;
-              ToucheDroite=false;
-          }
+          
       }
 
-      void this_keyReleased(KeyEvent e){
+    public void this_keyReleased(KeyEvent e){
           int code=e.getKeyCode();
           //System.out.println("Key released : "+code);
           
@@ -375,7 +558,12 @@ public class PanelField extends JPanel{
                   ToucheBas=false;
               }else if (code==90){
                   ToucheHaut=false;
+              }else if (code==16){
+                  Shift=false;
+              }else if (code==32){
+                  Space=false;
               }
+              
           }else if (numJoueur==2){       // Joueur 2 : pavé flèches
               if (code==39){
                   ToucheDroite=false;
@@ -385,6 +573,10 @@ public class PanelField extends JPanel{
                   ToucheBas=false;
               }else if (code==38){
                   ToucheHaut=false;
+              }else if (code==101){
+                  Shift=false;
+              }else if (code==98){
+                  Space=false;
               }
           }
           
