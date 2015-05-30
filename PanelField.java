@@ -43,8 +43,9 @@ public class PanelField extends JPanel{
     boolean ToucheHaut,ToucheBas,ToucheDroite,ToucheGauche,Shift,Space;
     
     boolean debutJeu=false;
-    double tempsCourse=0;
-    int tempsTotal;
+    boolean end=false;
+    double tempsCourse=0;//temps du chrono
+    int tempsTotal;     //temps total d'ouverture du panel
     int nbTours=0;
     double[][] position=new double[2][2];
     
@@ -52,7 +53,6 @@ public class PanelField extends JPanel{
     char freine;
     int xpos=0;
     Kart kart1;
-    Kart kartAdv;
     
     static ArrayList <Item> Items;//liste de tous les objets actifs
     double X; //le x du kart que l'on  récupérera une fois par boucle pour éviter d'avoir à appeler tous les temps les accesseurs
@@ -80,12 +80,13 @@ public class PanelField extends JPanel{
         modeJoueur=mJ;
         
         setLayout(new GridLayout (15,1));
-            
+        
+        //Modification des couleurs des textes    
         textTour.setForeground(Color.white);
-        textChrono.setForeground(Color.red);
+        textChrono.setForeground(Color.red); // texte de lancement du jeu"a vos marques, pret, go", remplacé ensuite par le chrono
         textBonus.setForeground(Color.white);
         
-        //Règle la taille du texte dans chaque button
+        //Règle la taille du texte du bouton et des labels
         Font newButtonBackFont=new Font(Back.getFont().getName(),Back.getFont().getStyle(),20);
         Back.setFont(newButtonBackFont);
         
@@ -100,26 +101,22 @@ public class PanelField extends JPanel{
         add(textTour);
         add(textBonus);
         
-        if(numJoueur==1){           // pas besoin de l'afficher en double dans le mode 2 joueurs
+        if(numJoueur==1){           // inutile de l'afficher en double dans le mode 2 joueurs
            add(textChrono);
         }
         
-        
-        
+
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();     
         
+        //Création des kart
         if(modeJoueur==1){kart1=new Kart(444,174,0,1,15,10,0.1,150,1);}
-        else{
-            
-            if(numJoueur==1){
+        else if(numJoueur==1){
                 kart1=new Kart(439,169,0,1,15,10,0.1,150,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
-                kartAdv=new Kart(441,174,0,1,15,10,0.1,150,1);
             }else {
                 kart1=new Kart(441,174,0,1,15,10,0.1,150,1);
-                kartAdv=new Kart(439,169,0,1,15,10,0.1,150,1);
-            }
         }
+        
 
 
         if (modeJoueur==1) {echelle=30;}
@@ -147,7 +144,6 @@ public class PanelField extends JPanel{
     
         //demi ellipse intérieure négative
         c=0; 
-    
         for (int i=376;i<753;i++){
             tabXint[i]= (i-c-188);
             tabYint[i]=  -Math.sqrt(bInt*bInt*(1.0-(tabXint[i]*tabXint[i]/aInt/aInt)));
@@ -155,16 +151,9 @@ public class PanelField extends JPanel{
         }  
         
         Items=new ArrayList <Item>();//les karts sont toujours ajoutés en premier dans la liste, puis les bonus après
-        //Items.add(kart1);
         if (modeJoueur==1){
             Items.add(kart1);
-        }/*else if(numJoueur==1){
-            Items.add(kart1);
-            Items.add(kartAdv);
-        }else{
-            Items.add(kartAdv);
-            Items.add(kart1);
-        }*/
+        }
         
         //Création des lignes de Cadeaux 
         for (int i=2;i<12;i+=2){                            // les cadeaux d'une seule ligne ne se suivent pas ds la liste 
@@ -178,22 +167,28 @@ public class PanelField extends JPanel{
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
 
+        //Mémorisation de la position initiale du kart 
         position[0][0]=kart1.getX();
         position[0][1]=kart1.getY();
      
     }
+    
     public void paint(Graphics g){
-        
         paintComponents(buffer);
         g.drawImage(ArrierePlan,0,0,this);
     }
     
     class TimerAction implements ActionListener{
         public void actionPerformed(ActionEvent e){
+            
+            if (modeJoueur==1 && nbTours>=3){    //detection de la fin du jeu pour le mode 1 joueur
+                end=true;
+            } 
+            
             boucle_principale_jeu();
             boucle_principale_affichage();
             
-            if(debutJeu){
+            if(debutJeu&&!end){
                 tempsTotal+=25;
             }
             
@@ -209,9 +204,8 @@ public class PanelField extends JPanel{
                 textChrono.setForeground(Color.white);}
             
             
-            if(tempsTotal>=3500){   // Définir le départ du chrono. Arbitrairement 3.5s
+            if(tempsTotal>=3500&&!end){   // Définir le départ du chrono. Arbitrairement 3.5s
                 tempsCourse+=25;
-
             } 
             
             //comptage du nombre de tour
@@ -228,16 +222,18 @@ public class PanelField extends JPanel{
         
     }
     
+    /**Detecte l'ouverture du Panel et lance le chrono du temps total*/
     public void activeCompteur(){
        debutJeu=true; 
     }
       
+    /**Gère les déplacements du kart et les bonus */
     public void boucle_principale_jeu(){
             X=kart1.getX();
             Y=kart1.getY();
             DX=kart1.getdx();
             DY=kart1.getdy();
-            if(tempsCourse>0){
+            if(tempsCourse>0&&!end){
                 if (ToucheBas){
                     freine='y';
                     kart1.freine();
@@ -344,6 +340,7 @@ public class PanelField extends JPanel{
         }
     }
     
+    /**Gère l'affichage des différents éléments (ellispes, karts, bonus, */
     public void boucle_principale_affichage(){
         kart1.calculTheta();        
         alpha=kart1.getTheta()-Math.PI/2;
@@ -353,23 +350,18 @@ public class PanelField extends JPanel{
         buffer.fillRect(0,0,1200,840);
         buffer.setColor(Color.black);
         
+        //Calcul des coins de la nouvelle fenêtre en fonction de la position du kart et de son angle
         double fx,fy;
-        //if(modeJoueur==1){
-            fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))+alpha);
-            fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
-        /*}else {
-            fy=kart1.getY()+Math.sqrt(20*20+42*42)*Math.cos(Math.acos(42/Math.sqrt(20*20+42*42))+alpha);
-            fx=kart1.getX()-Math.sqrt(20*20+42*42)*Math.sin(Math.asin(20/Math.sqrt(20*20+42*42))+alpha);           
-        }*/
+        fy=kart1.getY()+Math.sqrt(20*20+21*21)*Math.cos(Math.acos(21/Math.sqrt(20*20+21*21))+alpha);
+        fx=kart1.getX()-Math.sqrt(20*20+21*21)*Math.sin(Math.asin(20/Math.sqrt(20*20+21*21))+alpha);
         
         //Ellispe Extérieure
         for(int i=0; i<800; i++){
-            x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalge y origine de l'ellipse
+            x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
             x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
             y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
             y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
             buffer.drawLine(x1,y1,x2,y2);
-            
         }
                 
         // Ellispe Intérieure
@@ -381,16 +373,16 @@ public class PanelField extends JPanel{
             buffer.drawLine(x1,y1,x2,y2);
         }
         
+        buffer.setColor(Color.white);
         //Ligne de départ
         if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
-            buffer.setColor(Color.white);
             if(modeJoueur==1){
                 x1=this.m2SX(450, 175,fx, fy, 28, alpha, echelle);       
                 x2=this.m2SX(438, 175,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450, 175,fx,fy, 28, alpha, echelle);
                 y2=this.m2SY(438, 175,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);  }
-            else{
+            else{                       // mode 2 joueurs : 2 lignes pour compenser le position sur l'ellipse des 2 karts
                 x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
                 x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
@@ -409,7 +401,6 @@ public class PanelField extends JPanel{
                 
         //Ligne d'arrivée
         if(tempsCourse>10000){                   //affichage de la ligne d'arrivée à la place de la ligne de départ au bout de 10 sec  
-            buffer.setColor(Color.white);
             for(int i=0; i<12;i+=2){
                 x1=this.m2SX(438.5+i, 175.5,fx, fy, 28, alpha, echelle);          
                 y1=this.m2SY(438.5+i, 175.5,fx,fy, 28, alpha, echelle);
@@ -418,10 +409,8 @@ public class PanelField extends JPanel{
         }    
         
         
-        
-        
+        //Affichage des objets autres que les kart = Cadeaux
         for (int k=modeJoueur; k<Items.size(); k++) {
-            
             Item it = Items.get(k);
             int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
             int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
@@ -429,22 +418,14 @@ public class PanelField extends JPanel{
             
         }
         
-        /*int Xkart=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       
-        int Ykart=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle); 
-        kart1.draw(buffer,Xkart,Ykart);*/
-        
-        if(modeJoueur==2){
-            for(int k=0;k<modeJoueur;k++){
-                /*Xkart=this.m2SX(kartAdv.getX()-0.5,kartAdv.getY()+1,fx, fy, 28, alpha, echelle);       
-                Ykart=this.m2SY(kartAdv.getX()-0.5,kartAdv.getY()+1,fx, fy, 28, alpha, echelle); 
-                kartAdv.draw(buffer,Xkart,Ykart);*/
-                Item it = Items.get(k);
-                int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
-                int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
-                it.draw(buffer,X,Y);
-            }
+        //Affichage des karts : différents des cadeaux car x,y correspondent au milieu du kart =/= coin haut gauche
+        for(int k=0;k<modeJoueur;k++){
+            Item it = Items.get(k);
+            int X=this.m2SX(it.getX()-0.5,it.getY()-0.85,fx, fy, 28, alpha, echelle);       
+            int Y=this.m2SY(it.getX()-0.5,it.getY()-0.85,fx, fy, 28, alpha, echelle); 
+            it.draw(buffer,X,Y);
         }
-        
+
         repaint();
         
     }
@@ -493,11 +474,8 @@ public class PanelField extends JPanel{
         return (int)(840-Y*ech); 
     }
     
-    public void setModeJoueur(int mj){
-         this.modeJoueur=mj; 
-    }
-    
-    
+    /** Calcule le nombre de tour effectué par un kart (affiche le nombre de tour en cours)
+     * @param pos un tableau de dimension 2 de doubles contenant les positions du kart à un temps t-1 et t*/
     public void compteTour(double[][] pos){
          if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
              if(pos[0][1]<175 && pos[1][1]>=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
@@ -505,7 +483,9 @@ public class PanelField extends JPanel{
             }
         }
     }
-     
+    
+
+    
     public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
           //System.out.println("Key pressed : "+code);

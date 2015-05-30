@@ -1,3 +1,4 @@
+
 import java.awt.GridLayout;
 
 import java.awt.event.ActionEvent;
@@ -7,6 +8,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 public class Window3 extends JFrame{
     final int LARGPIX=1200;
@@ -27,8 +29,8 @@ public class Window3 extends JFrame{
         add(field1);
         add(field2);
         
-        field1.Items.add(field1.kart1);
-        field1.Items.add(field2.kart1);
+        field1.Items.add(field1.kart1);     // ajout des 2 kart à la liste d'objets
+        field1.Items.add(field2.kart1);     // Items étant en static, on peut l'ajouter à field1.Items ou field2.Items sans changement
         
         field1.setVisible(true);
         field2.setVisible(true);
@@ -37,39 +39,57 @@ public class Window3 extends JFrame{
         this.setFocusable(true);
         
         field1.Back.addActionListener(new ActionListener(){
-               public void actionPerformed(ActionEvent actionEvent){
-                   new Window().setVisible(true);
-                   dispose();
-               }
-           });
+            public void actionPerformed(ActionEvent actionEvent){
+                new Window().setVisible(true);
+                dispose();
+            }
+        });
         
         field2.Back.addActionListener(new ActionListener(){
-               public void actionPerformed(ActionEvent actionEvent){
-                   new Window().setVisible(true);
-                   dispose();
-               }
-           });
+            public void actionPerformed(ActionEvent actionEvent){
+                new Window().setVisible(true);
+                dispose();
+            }
+        });
+        
+        Timer timer=new Timer(50,new TimerAction());
+        timer.start();
+        
     }
     
-        private class Window3_this_keyAdapter extends KeyAdapter{
-                private Window3 adaptee;
-                Window3_this_keyAdapter(Window3 adaptee){
-                   this.adaptee=adaptee; 
-                }
-                public void keyPressed(KeyEvent e){
-                    field1.this_keyPressed(e);
-                    field2.this_keyPressed(e);
-                    
-                }
-                public void keyReleased(KeyEvent e){
-                    field1.this_keyReleased(e);
-                    field2.this_keyReleased(e);
-                   
-                }
-                
-                
-                
-            }
+
+    class TimerAction implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+        
+        // Detection de la fin du jeu
+        if (field1.nbTours>=3|| field2.nbTours>=3){ 
+            field1.end=true;
+            field2.end=true;
+        } 
+    }}
+    
+    /** Détermine qui le joueur gagnant
+     * Retourne le numéro du joueur gagnant*/
+    public int findWinner(){
+        if(field1.nbTours>field2.nbTours){return 1;}
+        else{return 2;}
     }
+    
+    
+    private class Window3_this_keyAdapter extends KeyAdapter{
+        private Window3 adaptee;
+        Window3_this_keyAdapter(Window3 adaptee){
+            this.adaptee=adaptee; 
+        }
+        public void keyPressed(KeyEvent e){
+            field1.this_keyPressed(e);
+            field2.this_keyPressed(e);        
+        }
+        public void keyReleased(KeyEvent e){
+            field1.this_keyReleased(e);
+            field2.this_keyReleased(e);
+        }
+    }
+}
 
       
