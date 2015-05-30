@@ -133,8 +133,12 @@ public class Kart extends Item {
     }
     
     public void freine(){
+        if (frontSpeed==0){
+            x=x-dx*0.075;
+            y=y-dy*0.075;
+        }
         if (derapeDroite || derapeGauche){//le kart perd de la vitesse moins vite quand ça dérape
-            frontSpeed=frontSpeed-0.9;
+            frontSpeed=frontSpeed-0.04;
         }
         else{
             frontSpeed=frontSpeed-0.12;
@@ -297,6 +301,9 @@ public class Kart extends Item {
         this.tabx[2]=this.x-(h/2)*Math.cos(this.theta)-(l/2)*Math.sin(this.theta);//en bas à gauche          
         this.tabx[3]=this.x-(l/2)*Math.sin(this.theta)+(h/2)*Math.cos(this.theta);//en haut à gauche          
         this.tabx[4]=this.x+(h/2)*Math.cos(this.theta)+(l/2)*Math.sin(this.theta);//en haut à droite
+        //for (int i=0;i<5;i++){
+           // System.out.println(tabx[i]);
+       // }
     }
     
     public void coordCoinsY(){//Attention theta doit être mis à jour 
@@ -306,6 +313,9 @@ public class Kart extends Item {
         this.taby[2]=this.y-(h/2)*Math.sin(this.theta)+(l/2)*Math.cos(this.theta);                   
         this.taby[3]=this.y+(l/2)*Math.cos(this.theta)+(h/2)*Math.sin(this.theta);                    
         this.taby[4]=this.y+(h/2)*Math.sin(this.theta)-(l/2)*Math.cos(this.theta);
+       // for (int i=0;i<5;i++){
+           // System.out.println(taby[i]);
+        //}
     }
     
     public boolean colliMurs(){
@@ -314,13 +324,27 @@ public class Kart extends Item {
         this.coordCoinsY();
         for (int i=0;i<5;i++){
             //regarde si un des coins est dans l'ellipse intérieur ou en dehors de l'ellipse extérieur
-            if ((tabx[i]*tabx[i]/((PanelField.aInt)*(PanelField.aInt)))+(taby[i]*taby[i]/((PanelField.bInt)*(PanelField.bInt)))<=1 || (tabx[i]*tabx[i]/((PanelField.aExt)*(PanelField.aExt)))+(taby[i]*taby[i]/((PanelField.bExt)*(PanelField.bExt)))>=1 ){
+            if (((tabx[i]-250)*(tabx[i]-250)/((PanelField.aInt)*(PanelField.aInt)))+((taby[i]-175)*(taby[i]-175)/((PanelField.bInt)*(PanelField.bInt)))<=1 || ((tabx[i]-250)*(tabx[i]-250)/((PanelField.aExt)*(PanelField.aExt)))+((taby[i]-175)*(taby[i]-175)/((PanelField.bExt)*(PanelField.bExt)))>=1 ){
                 colliMur=true;
                 return colliMur;
             }
             
         }return colliMur;
     }
+    
+    public void doColliMurs(){
+        if (derapeGauche==false && derapeDroite==false){
+            this.setX(x-dx*2.5);
+            this.setY(y-dy*2.5);
+            this.setSpeed(0);
+        }
+        if (derapeGauche || derapeDroite ){
+            this.setX(x-dxDir*2.5);
+            this.setY(y-dyDir*2.5);
+            this.setSpeed(0);
+        }
+    }
+    
     
     public void doCollision(Item item){
         

@@ -262,7 +262,7 @@ public class PanelField extends JPanel{
                 }
                 kart1.derapage(tourne,freine);
                 freine='n';
-              if (kart1.Bonus()){//Si le kart a un bonus dispo
+                if (kart1.Bonus()){//Si le kart a un bonus dispo
                     if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
                         if (kart1.getNomBonus()=="MISSILE"){
                             if (Shift){
@@ -295,6 +295,9 @@ public class PanelField extends JPanel{
                 kart1.calculTheta();
                 kart1.coordCoinsX();
                 kart1.coordCoinsY();
+            if (kart1.colliMurs()){
+                 kart1.doColliMurs();
+            }
             
            for (int i=0;i<Items.size();i++){
                 Item O=Items.get(i);
@@ -357,20 +360,41 @@ public class PanelField extends JPanel{
         
         //Ellispe Extérieure
         for(int i=0; i<800; i++){
-            x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
-            x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
-            y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
-            y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
-            buffer.drawLine(x1,y1,x2,y2);
+            if (i%2==0){
+                buffer.setColor(Color.red);
+                x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }else{
+                buffer.setColor(Color.black);
+                x1=this.m2SX(tabXext[i]+250, tabYext[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }
+            
         }
                 
         // Ellispe Intérieure
         for(int i=0; i<752; i++){
-            x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
-            x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
-            y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
-            y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
-            buffer.drawLine(x1,y1,x2,y2);
+            if (i%2==0){
+                buffer.setColor(Color.red);
+                x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }else{
+                buffer.setColor(Color.black);
+                x1=this.m2SX(tabXint[i]+250, tabYint[i]+175,fx, fy, 28, alpha, echelle);       //+250 : décalage origine x de l'ellipse / +175 : décalage y origine de l'ellipse
+                x2=this.m2SX(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);      
+                y1=this.m2SY(tabXint[i]+250, tabYint[i]+175,fx,fy, 28, alpha, echelle);
+                y2=this.m2SY(tabXint[i+1]+250, tabYint[i+1]+175,fx, fy, 28, alpha, echelle);
+                buffer.drawLine(x1,y1,x2,y2);
+            }
         }
         
         buffer.setColor(Color.white);
