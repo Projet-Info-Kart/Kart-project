@@ -89,7 +89,7 @@ public class Kart extends Item {
             double norme=Math.sqrt((x-xc)*(x-xc)+(y-yc)*(y-yc));
             dy=-(x-xc)/norme;
             dx=(y-yc)/norme;
-        };
+        }
     }
     
     public void avance(int i){// si i=0, le kart avance normalement, sinon il se contente d'augmenter la vitesse sans modifier la position
@@ -178,7 +178,7 @@ public class Kart extends Item {
         if ((tourne=='g' && fCent>fAdm && derapeDroite==false) || (derapeGauche && fCent>fAdm*coeff )){
             coeff=0.2;//reset du coeff 0.2
             compt++;
-            if (compt>10){//le dérapage ne s'active que si on a commencé à tourner depuis un certain temps (250ms)
+            if (compt>10){//le dérapage ne s'active que si on a commencé à tourner depuis un certain temps 
                 if (derapeGauche==false){
                     dxDir=dx;//les directions vers lesquelles la voiture roulait quand elle a commencé à déraper
                     dyDir=dy;
@@ -190,7 +190,9 @@ public class Kart extends Item {
                 double normex=1;
                 double normey=1;
                 //System.out.println("dérape gauche");
-                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;
+                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;//0.0008 normalement
+                System.out.println("THETADIR="+thetaDir);
+                //System.out.println("frontSpeed="+frontSpeed);
                 if (dyDir!=0){                                   //cette partie permet de calculer les nouveaux dxDir et dyDir de la voiture=direction vers laquelle la voiture roule         
                     normexDir=Math.tan(thetaDir)*(dyDir/Math.abs(dyDir));
                 }else if (dxDir<0){
@@ -201,15 +203,18 @@ public class Kart extends Item {
                 }else if (dyDir>0){
                     normexDir=-1;
                 }
+                System.out.println("normexDir="+normexDir);
+                System.out.println("normeyDir="+normeyDir);
                 double x2Dir=x+dxDir-Math.cos(thetaDir)*normexDir;
                 double y2Dir=y+dyDir+Math.sin(thetaDir)*normeyDir;
                 double normeDir=Math.sqrt((x2Dir-x)*(x2Dir-x)+(y2Dir-y)*(y2Dir-y));
                 dxDir=(x2Dir-x)/normeDir;
                 dyDir=(y2Dir-y)/normeDir;
-                
+                System.out.println("dxDir="+dxDir);
+                System.out.println("dyDir="+dyDir);
                 
                 double thetad=frontSpeed*0.01*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
-               // System.out.println("THETA= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
+                System.out.println("THETA= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
                 if (dy!=0){                                   //cette partie permet de calculer les nouveaux dx et dy=orientation de la voiture        
                     normex=Math.tan(thetad)*(dy/Math.abs(dy));
                 }else if (dx<0){
@@ -249,6 +254,7 @@ public class Kart extends Item {
                 double normey=1;
                 
                 double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.0008;
+                System.out.println("THETADIR="+thetaDir);
                 if (dyDir!=0){                                           
                     normexDir=Math.tan(thetaDir)*(dyDir/Math.abs(dyDir));
                 }else if (dxDir<0){
@@ -266,7 +272,7 @@ public class Kart extends Item {
                 dyDir=(y2Dir-y)/normeDir;
                 
                 double thetad=frontSpeed*0.01*coeffFrein;
-                //System.out.println("THETA= "+thetad);
+                System.out.println("THETAD= "+thetad);
                 if (dy!=0){
                     normex=Math.tan(thetad)*(dy/Math.abs(dy));
                 }else if (dx<0){

@@ -149,9 +149,9 @@ public class PanelField extends JPanel{
                 tempsTotal+=25;
             }
             
-            if(tempsTotal>=10000){   // Définir le départ du chrono. Arbitrairement 10s
+            if(tempsTotal>=100){   // Définir le départ du chrono. Arbitrairement 10s
                 tempsCourse+=25;
-                System.out.println("Temps de course : "+tempsCourse/1000+" sec");
+                //System.out.println("Temps de course : "+tempsCourse/1000+" sec");
             } 
             
             //comptage du nombre de tour
@@ -163,7 +163,7 @@ public class PanelField extends JPanel{
                 position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
                 position[0][1]=kart1.getY();
             }
-            System.out.println("Tour n°"+nbTours +" en cours" );
+            //System.out.println("Tour n°"+nbTours +" en cours" );
             textTour.setText("Nombre de tours : "+nbTours);
             textChrono.setText("Temps : "+tempsCourse/1000 + "s");
         }
