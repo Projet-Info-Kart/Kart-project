@@ -18,13 +18,13 @@ public class Banane extends Projectile{
             
     }
         
-  /*  public void drawGraphTest(Graphics g){
+    public void drawGraphTest(Graphics g){
         g.setColor(Color.yellow);
         g.fillOval((int)x,(int)(576-y),5,5);//rayon du cercle à adapter aver l'échelle
     }
     
-    public void draw(Graphics g,int x, int y){
+    /*public void draw(Graphics g,int x, int y, double echelle){
         g.setColor(Color.yellow);
-        g.fillOval(x,y,5,5);//rayon du cercle à adapter aver l'échelle
+        g.fillOval(x,y,(int)(rayon*echelle),(int)(rayon*echelle));//rayon du cercle à adapter aver l'échelle
     }*/
 }

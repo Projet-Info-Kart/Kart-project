@@ -40,8 +40,8 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
         }
 
     public void explosion(){
-        for (int i=0;i<graphTest.nbJoueurs;i++){//regarde si des karts sont présents dans l'explosion
-            Item O=graphTest.Items.get(i);
+        for (int i=0;i<PanelField.modeJoueur;i++){//regarde si des karts sont présents dans l'explosion
+            Item O=PanelField.Items.get(i);
             if (this.colliExplosion(O)){
                 O.frontSpeed=0;
                 double X=O.x-this.x;
@@ -51,8 +51,8 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
                 O.y=y+(Y/distance)*5;
             }
         }
-        for (int i=graphTest.nbJoueurs; i<graphTest.Items.size();i++){//regarde si des bonus sont compris dans l'explosion
-            Item O=graphTest.Items.get(i);
+        for (int i=PanelField.modeJoueur; i<PanelField.Items.size();i++){//regarde si des bonus sont compris dans l'explosion
+            Item O=PanelField.Items.get(i);
             if (this.colliExplosion(O)){
                 O.actif=false;
             }
@@ -64,12 +64,12 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
         
     }
    
-   /* public void drawGraphTest(Graphics g){
+    public void drawGraphTest(Graphics g){
         g.setColor(Color.black);
         g.fillOval((int)x,(int)(576-y),10,10);//rayon du cercle à adapter avec l'échelle
     }
-    public void draw(Graphics g, int x, int y){
+   /* public void draw(Graphics g, int x, int y, double echelle){
         g.setColor(Color.black);
-        g.fillOval(x,y,10,10);//rayon du cercle à adapter avec l'échelle
+        g.fillOval(x,y,(int)(rayon*echelle),(int)(rayon*echelle));//rayon du cercle à adapter avec l'échelle
     }*/
 }

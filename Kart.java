@@ -27,7 +27,7 @@ public class Kart extends Item {
     private int compt;//compteur dérapage
     private double thetaOri;//le theta quand le kart a commence à déraper
     private boolean aBonus;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private static String nomBonus;//PAREIL
+    private String nomBonus;//PAREIL
 
     
     
@@ -190,25 +190,16 @@ public class Kart extends Item {
                     dxDir=dx;//les directions vers lesquelles la voiture roulait quand elle a commencé à déraper
                     dyDir=dy;
                     thetaOri=theta;
-                    System.out.println("hahaha dx="+dx+" et dy="+dy);
+
                 }
                 derapeGauche=true;
-                //System.out.println("fadm="+fAdm+" fCent="+fCent);
-                double normexDir=1;
-                double normeyDir=1;
-                double normex=1;
-                double normey=1;
-                //System.out.println("dérape gauche");
-                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;//0.0008 normalement
-                System.out.println("THETADIR="+thetaDir);
+                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;//0.0008 normalemen
                 dxDir=Math.cos(thetaDir+thetaOri);
                 dyDir=Math.sin(thetaDir+thetaOri);
                 thetaOri=thetaOri+thetaDir;
-                System.out.println("dxDir="+dxDir);
-                System.out.println("dyDir="+dyDir);
                 
                 double thetad=frontSpeed*0.0015*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
-                System.out.println("THETAPivot= "+thetad);          //le theta représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
+                                                            //le thetad représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
                 dx=Math.cos(thetad+theta);
                 dy=Math.sin(thetad+theta);
                 
@@ -229,25 +220,15 @@ public class Kart extends Item {
                     thetaOri=theta;
                 }
                 derapeDroite=true;
-                //System.out.println("dérape droite");
-                double normexDir=1;
-                double normeyDir=1;
-                double normex=1;
-                double normey=1;
                 
                 double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;
-                System.out.println("THETADIR="+thetaDir);
                 dxDir=Math.cos(-thetaDir+thetaOri);
                 dyDir=Math.sin(-thetaDir+thetaOri);
                 thetaOri=thetaOri+thetaDir;
                 double thetad=frontSpeed*0.0015*coeffFrein;
-                System.out.println("THETAD= "+thetad);
                 dx=Math.cos(-thetad+theta);
                 dy=Math.sin(-thetad+theta);
-                //System.out.println("norme="+norme);
-               // System.out.println("dx="+dx);
-               // System.out.println("dy="+dy);
-            
+ 
                 if (Math.abs(Math.atan2(dy,dx)-Math.atan2(dyDir,dxDir))>0.5){
                     coeff=0.15;
                 }
@@ -256,7 +237,6 @@ public class Kart extends Item {
         if (derapeDroite || derapeGauche){
             x=x+dxDir*(frontSpeed*0.025);
             y=y+dyDir*(frontSpeed*0.025);
-            System.out.println("lololollol");
         }
         //System.out.println("coeff="+coeff);
     }
@@ -268,11 +248,11 @@ public class Kart extends Item {
         g.drawLine((int)x,(int)(576-y),(int)(x+dx*20),(int)((576-(y+dy*20))));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
     }
     */
-    public void draw(Graphics g, int ax, int ay){
+    public void draw(Graphics g, int ax, int ay, double echelle){
             
             g.drawImage(image,ax,ay,null);
-            g.setColor(Color.red);
-            g.drawLine(ax,ay,(int)(ax+dx*20),(int)(ay-dy*20));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
+            //g.setColor(Color.red);
+            //g.drawLine(ax,ay,(int)(ax+dx*20),(int)(ay-dy*20));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
         }
     
     

@@ -49,7 +49,7 @@ public abstract class Item {
     public abstract void move();//différent du avance(int i) de kart
     
    // public abstract void drawGraphTest(Graphics g);
-    public abstract void draw(Graphics g,int x, int y);
+    public abstract void draw(Graphics g,int x, int y, double echelle);
     
     public void setTemps(){// augmente le tempsVie de l'objet
            this.tempsVie++; 

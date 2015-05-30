@@ -37,9 +37,9 @@ public abstract class Projectile extends Item{
         }return colliMur;
     }
     
-    public void draw(Graphics g, int x,int y){
+    public void draw(Graphics g, int x,int y, double echelle){
         g.setColor(this.couleur);
-        g.fillOval(x,y,10,10);//rayon du cercle à adapter aver l'échelle
+        g.fillOval(x,y,(int)(rayon*echelle),(int)(rayon*echelle));//rayon du cercle à adapter aver l'échelle
     }
     
     

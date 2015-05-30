@@ -3,7 +3,7 @@ import java.awt.Graphics;
 
 public class Cadeau extends Item{
     private boolean visible;//quand le cadeau est touché par un kart, il devient invisible pour quelques secondes
-    private static double rayon=15;
+    private static double rayon=0.75;
     
     
     
@@ -32,10 +32,10 @@ public class Cadeau extends Item{
             g.fillOval((int)x,(int)(576-y),(int)rayon,(int)rayon);//rayon du cercle à adapter avec l'échelle
         }
     }*/
-    public void draw(Graphics g,int x,int y){
+    public void draw(Graphics g,int x,int y, double echelle){
         if (visible){
             g.setColor(Color.pink);
-            g.fillOval(x,y,(int)rayon,(int)rayon);//rayon du cercle à adapter avec l'échelle
+            g.fillOval(x,y,(int)(rayon*echelle),(int)(rayon*echelle));//rayon du cercle à adapter avec l'échelle
         }
     }
     

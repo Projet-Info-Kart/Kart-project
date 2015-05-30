@@ -61,7 +61,7 @@ public class PanelField extends JPanel{
     double DY;
     
     int numJoueur;
-    int modeJoueur;
+    static int modeJoueur;
     
     int x1=0;
     int x2=0;
@@ -420,30 +420,22 @@ public class PanelField extends JPanel{
         
         
         
-        for (int k=modeJoueur; k<Items.size(); k++) {
-            
-            Item it = Items.get(k);
-            int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
-            int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
-            it.draw(buffer,X,Y);
-            
-        }
-        
-        /*int Xkart=this.m2SX(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle);       
-        int Ykart=this.m2SY(kart1.getX()-0.5,kart1.getY()+1,fx, fy, 28, alpha, echelle); 
-        kart1.draw(buffer,Xkart,Ykart);*/
-        
-        if(modeJoueur==2){
-            for(int k=0;k<modeJoueur;k++){
-                /*Xkart=this.m2SX(kartAdv.getX()-0.5,kartAdv.getY()+1,fx, fy, 28, alpha, echelle);       
-                Ykart=this.m2SY(kartAdv.getX()-0.5,kartAdv.getY()+1,fx, fy, 28, alpha, echelle); 
-                kartAdv.draw(buffer,Xkart,Ykart);*/
+            //Affichage des objets autres que les kart = Cadeaux
+            for (int k=modeJoueur; k<Items.size(); k++) {
                 Item it = Items.get(k);
                 int X=this.m2SX(it.getX(),it.getY(),fx, fy, 28, alpha, echelle);       
                 int Y=this.m2SY(it.getX(),it.getY(),fx, fy, 28, alpha, echelle); 
-                it.draw(buffer,X,Y);
+                it.draw(buffer,X,Y,echelle);
+                        
             }
-        }
+                    
+                    //Affichage des karts : différents des cadeaux car x,y correspondent au milieu du kart =/= coin haut gauche
+            for(int k=0;k<modeJoueur;k++){
+                Item it = Items.get(k);
+                int X=this.m2SX(it.getX()-0.5,it.getY()-1,fx, fy, 28, alpha, echelle);       
+                int Y=this.m2SY(it.getX()-0.5,it.getY()-1,fx, fy, 28, alpha, echelle); 
+                it.draw(buffer,X,Y,echelle);
+                }
         
         repaint();
         
