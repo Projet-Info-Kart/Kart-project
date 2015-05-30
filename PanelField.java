@@ -1,6 +1,4 @@
 
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -8,14 +6,12 @@ import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -79,7 +75,7 @@ public class PanelField extends JPanel{
     JLabel textBonus=new JLabel("Bonus : ");
     Font textFont=new Font(textTour.getFont().getName(),textTour.getFont().getStyle(),20);
        
-    public PanelField(double ech, int h, int nJ, int mJ){
+    public PanelField(int h, int nJ, int mJ){
         
         setLayout(new GridLayout (15,1));
             
@@ -160,13 +156,7 @@ public class PanelField extends JPanel{
            Items.add(new Cadeau(50+i,175,1,0));
            Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
            Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
-        }
-        
-        /*Cadeau c=new Cadeau(444,175,1,0);//test avec un cadeau
-        Items.add(c);*/
-        //Bombe b=new Bombe(444,175,1,0);//test avec un cadeau
-        //Items.add(b);
-        
+        }      
         
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
@@ -203,7 +193,7 @@ public class PanelField extends JPanel{
                 textChrono.setForeground(Color.white);}
             
             
-            if(tempsTotal>=3500){   // Définir le départ du chrono. Arbitrairement 10s
+            if(tempsTotal>=3500){   // Définir le départ du chrono. Arbitrairement 3.5s
                 tempsCourse+=25;
             } 
             
@@ -216,8 +206,6 @@ public class PanelField extends JPanel{
                 position[0][1]=kart1.getY();
             }
             textTour.setText("Nombre de tours : "+nbTours);
-            
-            
             
         }
         
@@ -471,21 +459,20 @@ public class PanelField extends JPanel{
         return (int)(840-Y*ech); 
     }
     
-     public void setModeJoueur(int mj){
+    public void setModeJoueur(int mj){
          this.modeJoueur=mj; 
     }
     
     
-     public void compteTour(double[][] pos){
+    public void compteTour(double[][] pos){
          if(pos[0][0]>250 && pos [1][0]>250){   // moitié droite de l'ellipse
              if(pos[0][1]<175 && pos[1][1]>=175){     // passe la moitié supérieure de l'ellipse en venant du bas. 
                 nbTours++;     
             }
         }
     }
-   
-      
-      public void this_keyPressed(KeyEvent e){
+     
+    public void this_keyPressed(KeyEvent e){
           int code= e.getKeyCode();
           //System.out.println("Key pressed : "+code);
           
@@ -551,7 +538,7 @@ public class PanelField extends JPanel{
           
       }
 
-      void this_keyReleased(KeyEvent e){
+    public void this_keyReleased(KeyEvent e){
           int code=e.getKeyCode();
           //System.out.println("Key released : "+code);
           
