@@ -32,7 +32,7 @@ public class Kart extends Item {
     
     
     
-    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence,int numeroImage ){//pas encore ts les attributs
+    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence){//pas encore ts les attributs
         super(x,y,dx,dy);
         h=2;//hauteur de 2m
         l=1;//largeur de 1m
@@ -50,14 +50,14 @@ public class Kart extends Item {
         this.nomObjet="KART";
         
         frontSpeed=0;
-        if (numeroImage==1){
+        /*if (numeroImage==1){
             try{
                 image= ImageIO.read(new File("Kart2.png"));
             }catch (IOException e){
                 System.out.println("Could not load image file");
                 System.exit(1);
             }
-        }
+        }*/
     }
     public void tourne(char a){
         double theta=0;
@@ -304,13 +304,13 @@ public class Kart extends Item {
         //System.out.println("coeff="+coeff);
     }
     
-    public void drawGraphTest(Graphics g){
+  /*  public void drawGraphTest(Graphics g){
         
         g.drawImage(image,(int)(x),(int)(576-y),null);
         g.setColor(Color.red);
         g.drawLine((int)x,(int)(576-y),(int)(x+dx*20),(int)((576-(y+dy*20))));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
     }
-    
+    */
     public void draw(Graphics g, int ax, int ay){
             
             g.drawImage(image,ax,ay,null);
@@ -318,20 +318,6 @@ public class Kart extends Item {
             g.drawLine(ax,ay,(int)(ax+dx*20),(int)(ay-dy*20));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
         }
     
-    public double getX(){
-        return x;
-    }
-    public double getY(){
-        return y;
-    }
-    
-    public void setX(double x){
-        this.x=x;
-    }
-    
-    public void setY(double y){
-        this.y=y;
-    }
     
     public double getdx(){
         return dx;
@@ -410,6 +396,71 @@ public class Kart extends Item {
     public void setMaxSpeed(double a){
         maxSpeed=a;
     }
+    
+    public void setAdherence(double a){
+        this.adherence=a;
+    }
+    
+    public void setPoids(double a){
+        this.poids=a;
+    }
+    
+    public void setImage(int numkart, int nbJoueur){
+        if(nbJoueur==1){
+            if (numkart==1){
+                try{
+                    image= ImageIO.read(new File("kart1.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart1.png");
+                    System.exit(1);
+                }
+            }
+            else if (numkart==2){
+                try{
+                    image= ImageIO.read(new File("kart2.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart2.png");
+                    System.exit(1);
+                }
+            }
+            else{
+                try{
+                    image= ImageIO.read(new File("kart3.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart3.png");
+                    System.exit(1);
+                }
+            }
+        }
+        else{
+            if (numkart==1){
+                try{
+                    image= ImageIO.read(new File("kart12.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart1.png");
+                    System.exit(1);
+                }
+            }
+            else if (numkart==2){
+                try{
+                    image= ImageIO.read(new File("kart22.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart2.png");
+                    System.exit(1);
+                }
+            }
+            else{
+                try{
+                    image= ImageIO.read(new File("kart32.png"));
+                }catch (IOException e){
+                    System.out.println("Could not load image file"+"kart3.png");
+                    System.exit(1);
+                }
+            }
+        }
+    }
+    
+    
     public double getSpeed(){
         return frontSpeed;
     }

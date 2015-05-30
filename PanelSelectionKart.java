@@ -130,4 +130,8 @@ public class PanelSelectionKart extends JPanel {
         Pick.repaint();
        
     }
+    
+    public int getPosition(){
+        return position;    
+    }
 }

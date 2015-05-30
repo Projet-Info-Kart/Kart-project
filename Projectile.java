@@ -1,9 +1,14 @@
-public  abstract class Projectile extends Item{
+import java.awt.Color;
+import java.awt.Graphics;
+
+public abstract class Projectile extends Item{
     protected double rayon;// le rayon du missile qui est en fait une boule tous les projectiles ont le même pour plus de simplicité
+    protected Color couleur;
     
-    public Projectile(double x, double y, double dx, double dy){
+    public Projectile(double x, double y, double dx, double dy, Color c){
         super(x,y,dx,dy);
         this.rayon=0.75;//arbitraire normalement 0.75
+        couleur=c;
     }
     
     public boolean collision(Item item){
@@ -31,7 +36,11 @@ public  abstract class Projectile extends Item{
             colliMur=true;
         }return colliMur;
     }
-        
+    
+    public void draw(Graphics g, int x,int y){
+        g.setColor(this.couleur);
+        g.fillOval(x,y,10,10);//rayon du cercle à adapter aver l'échelle
+    }
     
     
     

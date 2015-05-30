@@ -26,10 +26,16 @@ public class Cadeau extends Item{
         }return colli;
     }
     
-    public void drawGraphTest(Graphics g){
+   /* public void drawGraphTest(Graphics g){
         if (visible){
             g.setColor(Color.pink);
             g.fillOval((int)x,(int)(576-y),(int)rayon,(int)rayon);//rayon du cercle à adapter avec l'échelle
+        }
+    }*/
+    public void draw(Graphics g,int x,int y){
+        if (visible){
+            g.setColor(Color.pink);
+            g.fillOval(x,y,(int)rayon,(int)rayon);//rayon du cercle à adapter avec l'échelle
         }
     }
     

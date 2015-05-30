@@ -6,7 +6,7 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
     private static double rayExpl;//le rayon de l'explosion
     
     public Bombe(double x, double y,double dx, double dy){
-        super(x,y,dx,dy);  
+        super(x,y,dx,dy,Color.black);  
         rayExpl=3;
         this.nomObjet="BOMBE";
     }
@@ -64,8 +64,12 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
         
     }
    
-    public void drawGraphTest(Graphics g){
+   /* public void drawGraphTest(Graphics g){
         g.setColor(Color.black);
         g.fillOval((int)x,(int)(576-y),10,10);//rayon du cercle à adapter avec l'échelle
     }
+    public void draw(Graphics g, int x, int y){
+        g.setColor(Color.black);
+        g.fillOval(x,y,10,10);//rayon du cercle à adapter avec l'échelle
+    }*/
 }
