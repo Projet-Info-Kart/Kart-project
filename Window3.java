@@ -15,6 +15,7 @@ public class Window3 extends JFrame{
     PanelField field1=new PanelField(1,2);
     PanelField field2=new PanelField(2,2);
     
+    
     public Window3(){
         setTitle("Pro Kart Racing 2015");
         setSize(LARGPIX,HAUTPIX); 
@@ -25,6 +26,9 @@ public class Window3 extends JFrame{
         
         add(field1);
         add(field2);
+        
+        field1.Items.add(field1.kart1);
+        field1.Items.add(field2.kart1);
         
         field1.setVisible(true);
         field2.setVisible(true);
