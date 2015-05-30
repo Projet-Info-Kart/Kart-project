@@ -265,8 +265,9 @@ public class PanelField extends JPanel{
                 }
                 kart1.derapage(tourne,freine);
                 freine='n';
-              if (kart1.Bonus()){//Si le kart a un bonus dispo
-                  textBonus.setText("Bonus : "+kart1.getNomBonus());
+
+                if (kart1.Bonus()){//Si le kart a un bonus dispo
+                    textBonus.setText("Bonus : "+kart1.getNomBonus());
                     if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
                         if (kart1.getNomBonus()=="MISSILE"){
                             if (Shift){
@@ -300,9 +301,8 @@ public class PanelField extends JPanel{
                 kart1.calculTheta();
                 kart1.coordCoinsX();
                 kart1.coordCoinsY();
-                
             if (kart1.colliMurs()){
-                kart1.doColliMurs();
+                 kart1.doColliMurs();
             }
             
            for (int i=0;i<Items.size();i++){
@@ -380,7 +380,8 @@ public class PanelField extends JPanel{
                 y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
                 y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);
-            }    
+
+            }
         }
                 
         // Ellispe Intérieure

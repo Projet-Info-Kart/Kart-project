@@ -21,16 +21,4 @@ public class Missile extends Projectile {
         item.actif=false;
     }
     
-
-    
-    public void drawGraphTest(Graphics g){
-        g.setColor(Color.green);
-        g.fillOval((int)x,(int)(576-y),15,15);//rayon du cercle à adapter aver l'échelle
-    }
-    
-    /*public void draw(Graphics g,int x,int y,double echelle){
-        g.setColor(Color.green);
-        g.fillOval(x,y,(int)(rayon*echelle),(int)(rayon*echelle));//rayon du cercle à adapter aver l'échelle
-    }*/
-    
 }
