@@ -32,7 +32,7 @@ public class Kart extends Item {
     
     
     
-    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence,int numeroImage ){//pas encore ts les attributs
+    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence ){//pas encore ts les attributs
         super(x,y,dx,dy);
         h=2;//hauteur de 2m
         l=1;//largeur de 1m
@@ -50,14 +50,14 @@ public class Kart extends Item {
         this.nomObjet="KART";
         
         frontSpeed=0;
-        if (numeroImage==1){
+        /*if (numeroImage==1){
             try{
                 image= ImageIO.read(new File("Kart2.png"));
             }catch (IOException e){
                 System.out.println("Could not load image file");
                 System.exit(1);
             }
-        }
+        }*/
     }
     public void tourne(char a){
         double theta=0;
@@ -390,6 +390,36 @@ public class Kart extends Item {
     public void setMaxSpeed(double a){
         maxSpeed=a;
     }
+    
+    public void setAdherence(double a){
+        this.adherence=a;
+        }
+    public void setImage(int i){
+        if (i==1){
+            try{
+                image= ImageIO.read(new File("kart1.png"));
+            }catch (IOException e){
+                System.out.println("Could not load image file"+"kart1.png");
+                System.exit(1);
+            }
+        }else if (i==2){
+            try{
+                image= ImageIO.read(new File("kart2.png"));
+            }catch (IOException e){
+                System.out.println("Could not load image file"+"kart2.png");
+                System.exit(1);
+            }
+        }else{
+            try{
+                image= ImageIO.read(new File("kart3.png"));
+            }catch (IOException e){
+                System.out.println("Could not load image file"+"kart3.png");
+                System.exit(1);
+            }
+        }
+    }
+    
+    
     public double getSpeed(){
         return frontSpeed;
     }

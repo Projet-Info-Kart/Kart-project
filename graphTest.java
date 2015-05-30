@@ -61,8 +61,8 @@ public class graphTest extends JFrame {
         this.setSize(900,576);
         this.setVisible(true);
         //Rectangle Ecran=new Rectangle(getInsets().left,getInsets().top,getSize().width-getInsets().right-getInsets().left,getSize().height-getInsets().bottom-getInsets().top);
-        kart1=new Kart(300,300,0,1,15,10,0.1,150,1,1);
-        kart2=new Kart(400,400,0,1,15,10,0.1,150,1,1);
+        kart1=new Kart(300,300,0,1,15,10,0.1,150,1);
+        kart2=new Kart(400,400,0,1,15,10,0.1,150,1);
         this.addKeyListener(new graphTest_this_keyAdapter(this));
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();

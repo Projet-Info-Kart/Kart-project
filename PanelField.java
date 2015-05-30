@@ -109,13 +109,15 @@ public class PanelField extends JPanel{
         ArrierePlan=new BufferedImage(2000,2000,BufferedImage.TYPE_INT_RGB);
         buffer=ArrierePlan.getGraphics();     
         
-        if(numJoueur==1){
-            kart1=new Kart(439,169,0,1,15,10,0.1,150,1,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
-        }else kart1=new Kart(441,174,0,1,15,10,0.1,150,1,1);
+        if(modeJoueur==1){kart1=new Kart(444,174,0,1,15,10,0.1,150,1);}
+        else{
+            if(numJoueur==1){
+                kart1=new Kart(439,169,0,1,15,10,0.1,150,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+            }else {kart1=new Kart(441,174,0,1,15,10,0.1,150,1);}
+        }
         
         hWind =h;
 
-       // echelle=30;
         if (modeJoueur==1) {echelle=30;}
         else {echelle=15;}
         
@@ -153,11 +155,11 @@ public class PanelField extends JPanel{
         
         //Création des lignes de Cadeaux 
         for (int i=2;i<12;i+=2){                            // les cadeaux d'une seule ligne ne se suivent pas ds la liste 
-           Items.add(new Cadeau(350,282.75-i,1,0));
-           Items.add(new Cadeau(150,282.75-i,1,0));
+           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,283.25-i,1,0));
+           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,282.75-i,1,0));
            Items.add(new Cadeau(50+i,175,1,0));
-           Items.add(new Cadeau(150,66.75,1,0));
-           Items.add(new Cadeau(350,66.75,1,0));
+           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
+           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
         }
         
         /*Cadeau c=new Cadeau(444,175,1,0);//test avec un cadeau
@@ -358,6 +360,7 @@ public class PanelField extends JPanel{
             y1=this.m2SY(tabXext[i]+250, tabYext[i]+175,fx,fy, 28, alpha, echelle);
             y2=this.m2SY(tabXext[i+1]+250, tabYext[i+1]+175,fx, fy, 28, alpha, echelle);
             buffer.drawLine(x1,y1,x2,y2);
+            
         }
                 
         // Ellispe Intérieure
@@ -372,6 +375,13 @@ public class PanelField extends JPanel{
         //Ligne de départ
         if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
             buffer.setColor(Color.white);
+            if(modeJoueur==1){
+                    x1=this.m2SX(450, 175,fx, fy, 28, alpha, echelle);       
+                    x2=this.m2SX(438, 175,fx, fy, 28, alpha, echelle);      
+                    y1=this.m2SY(450, 175,fx,fy, 28, alpha, echelle);
+                    y2=this.m2SY(438, 175,fx, fy, 28, alpha, echelle);
+                    buffer.drawLine(x1,y1,x2,y2);  }
+            else{
                 x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
                 x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
@@ -382,7 +392,8 @@ public class PanelField extends JPanel{
                 x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
                 y1=this.m2SY(450-6, 175,fx,fy, 28, alpha, echelle);
                 y2=this.m2SY(450-9, 175,fx, fy, 28, alpha, echelle);
-                buffer.drawLine(x1,y1,x2,y2);    
+                buffer.drawLine(x1,y1,x2,y2);
+            }
             
         }
                 

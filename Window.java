@@ -92,6 +92,7 @@ public class Window extends JFrame {
     //action du button Pick        
     selectionKart.Pick.addActionListener(new ActionListener(){
         public void actionPerformed(ActionEvent actionEvent){
+            choixKart();
             selectionKart.setVisible(false);
             field.setVisible(true);
             field.activeCompteur();
@@ -113,6 +114,25 @@ public class Window extends JFrame {
 
         setVisible(true);
     }
+       
+    public void choixKart(){
+        int position=selectionKart.getPosition();
+        switch (position) {
+            case 1 :field.kart1.setImage(1);
+                    field.kart1.setAdherence(1);
+                    field.kart1.setMaxSpeed(15);
+                    break;
+            case 2 :field.kart1.setImage(2);
+                    field.kart1.setAdherence(0.95);
+                    field.kart1.setMaxSpeed(16);
+                    break;
+            case 3 :field.kart1.setImage(3);
+                    field.kart1.setAdherence(1.1);
+                    field.kart1.setMaxSpeed(14);
+                    break;
+        }
+    } 
+       
        
       private class Window_this_keyAdapter extends KeyAdapter{
             private Window adaptee;
