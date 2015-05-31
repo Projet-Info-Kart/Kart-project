@@ -15,8 +15,7 @@ public class Window extends JFrame {
         PanelMenu menu = new PanelMenu();
         PanelSelectionKart selectionKart = new PanelSelectionKart();
         Tutorial tuto = new Tutorial();
-        CardLayout layout = new CardLayout();
-        SplitPanelSelection splitSelection = new SplitPanelSelection();   
+        CardLayout layout = new CardLayout(); 
         final int LARGPIX=1200;
         final int HAUTPIX=840;
         PanelField field=new PanelField(1,1);
@@ -31,11 +30,9 @@ public class Window extends JFrame {
         add(menu);
         add(field);
         add(selectionKart);
-        add(splitSelection);
         add(tuto);
         field.setVisible(false);
         selectionKart.setVisible(false);
-        splitSelection.setVisible(false);
         tuto.setVisible(false);
  
         this.addKeyListener(new Window_this_keyAdapter(this));

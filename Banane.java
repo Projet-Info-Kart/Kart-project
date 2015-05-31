@@ -18,9 +18,5 @@ public class Banane extends Projectile{
             
     }
         
-    public void drawGraphTest(Graphics g){
-        g.setColor(Color.yellow);
-        g.fillOval((int)x,(int)(576-y),5,5);//rayon du cercle à adapter aver l'échelle
-    }
-   
+
 }

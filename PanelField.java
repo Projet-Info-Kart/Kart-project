@@ -213,9 +213,9 @@ public class PanelField extends JPanel{
                 position[1][1]=kart1.getY();
             if(tempsCourse>10000){              //temps nécessaire pour qu'un tour ne soit pas décompter si le joueur tarde à démarrer
                 compteTour(position);
-                position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
-                position[0][1]=kart1.getY();
             }
+            position[0][0]=kart1.getX();    // position x actuelle définissant la position précédente du tour suivant
+            position[0][1]=kart1.getY();
 
             textTour.setText("Nombre de tours : "+nbTours);
             
