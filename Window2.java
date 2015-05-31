@@ -129,12 +129,12 @@ public class Window2 extends JFrame {
                     field.kart1.setPoids(150);
                     break;
         
-            case 2 :field.kart1.setAdherence(0.95);
-                    field.kart1.setMaxSpeed(15.5);
+            case 2 :field.kart1.setAdherence(0.9);
+                    field.kart1.setMaxSpeed(16);
                     field.kart1.setPoids(160);
                     break;
             case 3 :field.kart1.setAdherence(1.1);
-                    field.kart1.setMaxSpeed(14.5);
+                    field.kart1.setMaxSpeed(14);
                     field.kart1.setPoids(140);
                     break;
         }
