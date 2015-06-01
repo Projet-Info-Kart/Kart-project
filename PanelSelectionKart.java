@@ -13,7 +13,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 

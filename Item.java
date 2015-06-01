@@ -1,13 +1,6 @@
 import java.awt.Graphics;
 import java.awt.Image;
 
-import java.awt.Rectangle;
-
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 public abstract class Item {
     protected double x,y;//le x,y est au milieu du rectangle
     protected double dx,dy;
