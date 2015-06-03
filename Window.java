@@ -105,6 +105,8 @@ public class Window extends JFrame {
                 selectionKart.setVisible(false);
                 field.setVisible(true);
                 field.activeCompteur();
+                timer=new Timer(50,new TimerAction());
+                timer.start();
                 repaint();
             }
         });
@@ -152,8 +154,6 @@ public class Window extends JFrame {
                     field.kart1.setPoids(140);
                     break;
        }
-        timer=new Timer(50,new TimerAction());
-        timer.start();
     } 
        
     private class Window_this_keyAdapter extends KeyAdapter{

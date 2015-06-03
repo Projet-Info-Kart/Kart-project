@@ -68,11 +68,9 @@ public class PanelMenu extends JPanel {
         add(Box.createVerticalGlue());
         
         try { 
-            System.out.println("Peach Mario Kart.png");
-            backgroundMenu= ImageIO.read(new File("Peach Mario Kart.png")); 
-            System.out.println("Peach Mario Kart"+backgroundMenu);
+            backgroundMenu= ImageIO.read(new File("accueil.jpg")); 
         }catch(Exception err) { 
-            System.out.println("Peach Mario Kart.png"+" introuvable !");             
+            System.out.println("accueil.jpg introuvable !");             
             System.exit(1); 
             } 
     }
