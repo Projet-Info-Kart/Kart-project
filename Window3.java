@@ -21,6 +21,7 @@ public class Window3 extends JFrame{
     public Window3(){
         setTitle("Pro Kart Racing 2015");
         setSize(LARGPIX,HAUTPIX); 
+        setResizable(false);
         GridLayout layout = new GridLayout(1, 2,10,0);// 10 correspond à un espace de 10 pixel entre 2 colonnes= séparation entre les panels
         setLayout(layout);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -29,8 +30,9 @@ public class Window3 extends JFrame{
         add(field1);
         add(field2);
         
-        field1.Items.add(field1.kart1);     // ajout des 2 kart à la liste d'objets
-        field1.Items.add(field2.kart1);     // Items étant en static, on peut l'ajouter à field1.Items ou field2.Items sans changement
+        PanelField.Items.add(0,field1.kart1);     // ajout des 2 kart à la liste d'objets
+        PanelField.Items.add(1,field2.kart1);     // Items étant en static, on peut l'ajouter à field1.Items ou field2.Items sans changement
+        
         
         field1.setVisible(true);
         field2.setVisible(true);

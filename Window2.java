@@ -25,6 +25,7 @@ public class Window2 extends JFrame {
     public Window2 (){
         setTitle("Pro Kart Racing 2015");
         setSize(LARGPIX,HAUTPIX); 
+        setResizable(false);
         GridLayout layout = new GridLayout(1, 2);
         setLayout(layout);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

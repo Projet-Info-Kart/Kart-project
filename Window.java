@@ -126,7 +126,7 @@ public class Window extends JFrame {
             }
         });
 
-
+        setResizable(false);
         setVisible(true);
     }
        

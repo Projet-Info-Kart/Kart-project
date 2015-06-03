@@ -47,8 +47,9 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
                 double X=O.x-this.x;
                 double Y=O.y-this.y;
                 double distance = Math.sqrt(X*X+Y*Y);
-                O.x=x+(X/distance)*5;//pousse le kart dans la direction opposée au centre de l'explosion
-                O.y=y+(Y/distance)*5;
+                O.x=O.x+(X/distance)*5;//pousse le kart dans la direction opposée au centre de l'explosion
+                O.y=O.y+(Y/distance)*5;
+                System.out.println("booom");
             }
         }
         for (int i=PanelField.modeJoueur; i<PanelField.Items.size();i++){//regarde si des bonus sont compris dans l'explosion
@@ -56,7 +57,7 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
             if (this.colliExplosion(O)){
                 O.actif=false;
             }
-        }
+        }this.actif=false;
 
     }
     

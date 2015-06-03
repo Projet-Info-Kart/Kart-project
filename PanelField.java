@@ -155,14 +155,15 @@ public class PanelField extends JPanel{
             Items.add(kart1);
         }
         
-        //Création des lignes de Cadeaux 
+            //Création des lignes de Cadeaux 
         for (int i=2;i<12;i+=2){                            // les cadeaux d'une seule ligne ne se suivent pas ds la liste 
-           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,283.25-i,1,0));
-           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,282.75-i,1,0));
-           Items.add(new Cadeau(50+i,175,1,0));
-           Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
-           Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
-        }      
+            Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,283.25-i,1,0));
+            Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,282.75-i,1,0));
+            Items.add(new Cadeau(50+i,175,1,0));
+            Items.add(new Cadeau(150+Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
+            Items.add(new Cadeau(350-Math.sin(Math.acos(12/12.56502195))*i,66.75+i,1,0));
+        }
+        
         
         Timer timer=new Timer(25,new TimerAction());
         timer.start();
@@ -170,7 +171,6 @@ public class PanelField extends JPanel{
         //Mémorisation de la position initiale du kart 
         position[0][0]=kart1.getX();
         position[0][1]=kart1.getY();
-     
     }
     
     public void paint(Graphics g){
@@ -304,48 +304,58 @@ public class PanelField extends JPanel{
             if (kart1.colliMurs()){
                  kart1.doColliMurs();
             }
+            if (numJoueur==1){
             
-           for (int i=0;i<Items.size();i++){
-                Item O=Items.get(i);
-                O.setTemps();
-                O.move();
-            }
-        
-          for (int i=numJoueur;i<Items.size();i++){
-                Item O = Items.get(i);
-                for (int j=0;j<numJoueur;j++){//ça teste la collision avec les karts
-                    Item l=Items.get(j);
-                    if (O.collision(l)){
-                        O.doCollision(l);
+               for (int i=modeJoueur;i<Items.size();i++){//bouge les bonus
+                    Item O=Items.get(i);
+                    O.setTemps();
+                    O.move();
+                    
+                }
+            
+              for (int i=modeJoueur;i<Items.size();i++){
+                    Item O = Items.get(i);
+                    for (int j=0;j<modeJoueur;j++){//ça teste la collision avec les karts
+                        Item l=Items.get(j);
+                        if (O.collision(l)){
+                            O.doCollision(l);
+                        }
+                    }
+                    for (int j=i+1;j<Items.size();j++){//puis avec les autres bonus
+                        Item l=Items.get(j);
+                        if (O.collision(l)){
+                            O.doCollision(l);
+                        }
                     }
                 }
-                for (int j=i+1;j<Items.size();j++){//puis avec les autres bonus
-                    Item l=Items.get(j);
-                    if (O.collision(l)){
-                        O.doCollision(l);
+              /*if(modeJoueur==2){ //partie collision des 2 karts pas encore au point
+                  Kart k1=(Kart)Items.get(0);
+                  Kart k2=(Kart)Items.get(1);
+                  if (k1.collision(k2)){
+                      k1.doCollision(k2);
+                  }
+              }*/
+            
+               for(int i=modeJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
+                    Item O=Items.get(i);
+                    if (O.nomObjet=="BOMBE"){
+                        if (((Bombe)O).quandExploser()){
+                            ((Bombe)O).explosion();
+                        }
+                    }
+                    if(O.nomObjet=="CADEAU"){
+                        ((Cadeau)O).rendVisible();
                     }
                 }
-            }
-        
-           for(int i=numJoueur;i<Items.size();i++){//regarde si une bombe doit exploser d'elle meme
-                Item O=Items.get(i);
-                if (O.nomObjet=="BOMBE"){
-                    if (((Bombe)O).quandExploser()){
-                        ((Bombe)O).explosion();
+                //Garbage collector
+                for (int k=modeJoueur; k<Items.size(); k++) {
+                    Item O = Items.get(k);
+                    if (O.actif==false) {
+                        Items.remove(k);
+                        k--; 
                     }
-                }
-                if(O.nomObjet=="CADEAU"){
-                    ((Cadeau)O).rendVisible();
-                }
+                } 
             }
-            //Garbage collector
-            for (int k=numJoueur; k<Items.size(); k++) {
-                Item O = Items.get(k);
-                if (O.actif==false) {
-                    Items.remove(k);
-                    k--; 
-                }
-            }   
         }
     }
     

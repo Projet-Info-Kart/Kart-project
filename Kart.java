@@ -50,14 +50,6 @@ public class Kart extends Item {
         this.nomObjet="KART";
         
         frontSpeed=0;
-        /*if (numeroImage==1){
-            try{
-                image= ImageIO.read(new File("Kart2.png"));
-            }catch (IOException e){
-                System.out.println("Could not load image file");
-                System.exit(1);
-            }
-        }*/
     }
     public void tourne(char a){
         double thetaTourne=0;
@@ -346,8 +338,12 @@ public class Kart extends Item {
     }
     
     
-    public void doCollision(Item item){
-        
+    public void doCollision(Item item){//ne sera apppliqué que avec un autre kart
+        if (((Kart)item).poids>this.poids){//quand le kart adverse est plus lourd, la vitesse de notre kart est divisé par 2 lors de la collision
+            this.setSpeed(this.frontSpeed/2);
+        }else if (((Kart)item).poids<this.poids){//sinon l'inverse se produit
+            ((Kart)item).setSpeed((((Kart)item).getSpeed())/2);
+        }
     }
     
     public void setSpeed(double a){
