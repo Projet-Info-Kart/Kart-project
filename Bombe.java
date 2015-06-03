@@ -1,5 +1,4 @@
 import java.awt.Color;
-import java.awt.Graphics;
 
 public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment détecter s'il y a des karts dans la zone d'explosion quand elle explose
     

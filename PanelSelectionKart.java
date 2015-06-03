@@ -13,7 +13,6 @@ import java.io.File;
 
 import javax.imageio.ImageIO;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -61,27 +60,27 @@ public class PanelSelectionKart extends JPanel {
         add(Pick);
         
         try { 
-            kart1= ImageIO.read(new File("selectionKartMario.png")); 
+            kart1= ImageIO.read(new File("selectionKart1.png")); 
             //System.out.println("selectionKartMario"+kart1);
         }catch(Exception err) { 
-            System.out.println("selectionKartMario.png"+" introuvable !");             
+            System.out.println("selectionKart1.png"+" introuvable !");             
             System.exit(1); 
             } 
         
         try { 
-            kart2= ImageIO.read(new File("selectionKartDonkey.png")); 
+            kart2= ImageIO.read(new File("selectionKart2.png")); 
             //System.out.println("selectionKartDonkey"+kart2);
         }catch(Exception err) { 
-            System.out.println("selectionKartDonkey.png"+" introuvable !");             
+            System.out.println("selectionKart1.png"+" introuvable !");             
             System.exit(1); 
             } 
         
     
         try { 
-            kart3= ImageIO.read(new File("selectionKartYoshi.png")); 
+            kart3= ImageIO.read(new File("selectionKart3.png")); 
             //System.out.println("selectionKartYoshi"+kart3);
         }catch(Exception err) { 
-            System.out.println("selectionKartYoshi.png"+" introuvable !");             
+            System.out.println("selectionKart3.png"+" introuvable !");             
             System.exit(1); 
             } 
     

@@ -17,7 +17,7 @@ public class Window3 extends JFrame{
     PanelField field1=new PanelField(1,2);
     PanelField field2=new PanelField(2,2);
     
-    
+    Timer timer;
     public Window3(){
         setTitle("Pro Kart Racing 2015");
         setSize(LARGPIX,HAUTPIX); 
@@ -54,7 +54,7 @@ public class Window3 extends JFrame{
             }
         });
         
-        Timer timer=new Timer(50,new TimerAction());
+        timer=new Timer(50,new TimerAction());
         timer.start();
         
     }
@@ -64,9 +64,12 @@ public class Window3 extends JFrame{
         public void actionPerformed(ActionEvent e){
         
         // Detection de la fin du jeu
-        if (field1.nbTours>=3|| field2.nbTours>=3){ 
+        if (field1.nbTours>=1|| field2.nbTours>=1){ 
             field1.end=true;
             field2.end=true;
+            new ConfirmationExit(findWinner()).setVisible(true);
+            dispose();
+            timer.stop();
         } 
     }}
     
@@ -92,6 +95,6 @@ public class Window3 extends JFrame{
             field2.this_keyReleased(e);
         }
     }
-}
 
-      
+
+}

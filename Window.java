@@ -1,4 +1,5 @@
 
+
 import java.awt.CardLayout;
 
 import java.awt.event.ActionEvent;
@@ -8,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JFrame;
+import javax.swing.Timer;
 
 
 public class Window extends JFrame {
@@ -19,6 +21,8 @@ public class Window extends JFrame {
         final int LARGPIX=1200;
         final int HAUTPIX=840;
         PanelField field=new PanelField(1,1);
+        
+        Timer timer;
         
     public Window(){
         setTitle("Pro Kart Racing 2015");
@@ -101,7 +105,8 @@ public class Window extends JFrame {
                 selectionKart.setVisible(false);
                 field.setVisible(true);
                 field.activeCompteur();
-                
+                timer=new Timer(50,new TimerAction());
+                timer.start();
                 repaint();
             }
         });
@@ -118,9 +123,7 @@ public class Window extends JFrame {
         //action du btton back
         field.Back.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent actionEvent){
-                field.setVisible(false);
-                menu.setVisible(true);
-                new Window();
+                new Window().setVisible(true);;
                 dispose();
                 repaint();
             }
@@ -129,7 +132,10 @@ public class Window extends JFrame {
         setResizable(false);
         setVisible(true);
     }
+      
        
+
+
     public void choixKart(){
         int position=selectionKart.getPosition();
         field.kart1.setImage(position,1);//1 correspond au mode 1 joueur
@@ -146,7 +152,7 @@ public class Window extends JFrame {
                     field.kart1.setMaxSpeed(14.5);
                     field.kart1.setPoids(140);
                     break;
-        }
+       }
     } 
        
     private class Window_this_keyAdapter extends KeyAdapter{
@@ -167,5 +173,18 @@ public class Window extends JFrame {
             
         }    
         
+    class TimerAction implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+        
+        // Detection de la fin du jeu
+        if (field.nbTours>=1){ 
+            field.end=true;
+            new ConfirmationExit(1).setVisible(true);
+            dispose();
+            timer.stop();
+        } 
+    }}   
+    
+    
 }
 
