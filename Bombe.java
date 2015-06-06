@@ -48,7 +48,6 @@ public class Bombe extends Projectile{//WORK IN PROGRESS il faut trouver comment
                 double distance = Math.sqrt(X*X+Y*Y);
                 O.x=O.x+(X/distance)*5;//pousse le kart dans la direction opposée au centre de l'explosion
                 O.y=O.y+(Y/distance)*5;
-                System.out.println("booom");
             }
         }
         for (int i=PanelField.modeJoueur; i<PanelField.Items.size();i++){//regarde si des bonus sont compris dans l'explosion

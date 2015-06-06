@@ -3,15 +3,13 @@ import java.awt.Image;
 
 public abstract class Item {
     protected double x,y;//le x,y est au milieu du rectangle
-    protected double dx,dy;
+    protected double dx,dy; //vecteur direction
     protected double theta; // angle du vecteur de (dx,dy)
-    protected double frontSpeed;
+    protected double frontSpeed; // vitesse linéaire
     protected Image image;
-    protected double[] tabx;
+    protected double[] tabx; //le tableau des coins de l'objet
     protected double[] taby;
-    //protected int nbpoints; //le nombre de points utilisé dans le contour de l'objet
-    protected String nomObjet;
-    protected int numObjet; //boost=1  missile=2  bombe=3  banane=4   (éclair=5)   kart=6   ces conventions peuvent être amenées à changer
+    protected String nomObjet; 
     protected int tempsVie; //depuis combien de temps l'objet a été crée. 
     protected boolean actif;//dit si l'objet est actif ou non 
     
@@ -27,7 +25,6 @@ public abstract class Item {
         tabx=new double[5];
         taby=new double[5];
         this.actif=true;
-        //autres if pour les différentes images à ajouter
     }
     
     public void calculTheta(){

@@ -8,29 +8,29 @@ import javax.imageio.ImageIO;
 
 public class Kart extends Item {
     
-    private double rayCourb;
-    private double maxAcc;
-    private double poids;
-    private double fCent;
-    private double adherence;
-    private double maxSpeed;
+    private double rayCourb; //le rayon de courbure du kart quand il tourne
+    private double maxAcc; //la valeur d'accélération du kart
+    private double poids; //le poids (ou plutot la masse) du kart
+    private double fCent; //la valeur de la force centrifuge qui s'applique au kart
+    private double adherence; //le coefficient d'adherence du kart (1 si neutre)
+    private double maxSpeed; //la vitesse max du kart
     private double h,l;//hauteur et largeur de l'objet, la hauteur étant dans la direction du vecteur (dx,dy)
-    private boolean derapeDroite;
-    private boolean derapeGauche;
+    private boolean derapeDroite; //true si le kart dérape à droite
+    private boolean derapeGauche; //true si le kart dérape à gauche
     private double contrebraque;// coeff de contrebraquage lors du dérapage
-    private double contrebraqueMax;// attention cela correspond à un coeff minimum
+    private double contrebraqueMax;// le coefficient MINIMUM de contrebraquage, au plus fort du contrebraquage
     private double coeff;//coeff qui fait diminuer la fadm lors du dérapage
     private double coeffFrein;//coeff de freinage qui fait augmenter la fCent lorsqu'on freine;
-    private double dxDir,dyDir;
+    private double dxDir,dyDir; //vecteur direction (=/= orientation) du kart lors du dérapage
     private int compt;//compteur dérapage
     private double thetaOri;//le theta quand le kart a commence à déraper
-    private boolean aBonus;//CES DEUX VARIABLES SONT EN STATIQUE JUSTE POUR DES TEST
-    private String nomBonus;//PAREIL
+    private boolean aBonus;//true si le kart a un bonus disponible
+    private String nomBonus; //le nom du bonus disponible
 
     
     
     
-    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence){//pas encore ts les attributs
+    public Kart(double x,double y,double dx,double dy,double maxSpeed, double rayCourb, double maxAcc,double poids,double adherence){
         super(x,y,dx,dy);
         h=2;//hauteur de 2m
         l=1;//largeur de 1m
@@ -40,7 +40,7 @@ public class Kart extends Item {
         derapeDroite=false;
         derapeGauche=false;
         contrebraque=1;
-        coeff=0.2;//anciennement 0.5
+        coeff=0.2;
         contrebraqueMax=0.25;
         this.poids=poids;
         this.adherence=adherence;
@@ -49,10 +49,9 @@ public class Kart extends Item {
         
         frontSpeed=0;
     }
-    public void tourne(char a){
+    public void tourne(char a){//permet au kart de tourner selon un rayon de courbure
         double thetaTourne=0;
         if (a=='g'&& derapeGauche==false && derapeDroite==false && frontSpeed>0.2){
-            //System.out.println("tourne à gauche");
             double dxc=-dy;
             double dyc=dx;
             double xc=x+rayCourb*dxc;
@@ -67,7 +66,6 @@ public class Kart extends Item {
         }
     
         if (a=='d' && derapeDroite==false && derapeGauche==false && frontSpeed>0.2){
-            //System.out.println("tourne à droite");
             double dxc=dy;
             double dyc=-dx;
             double xc=x+rayCourb*dxc;
@@ -94,11 +92,7 @@ public class Kart extends Item {
             if (frontSpeed>maxSpeed){
                 frontSpeed=maxSpeed;
             }
-            
-
-        }//System.out.println("frontSpeed= "+frontSpeed);
-
-        
+        }
 
         if (i==0 && derapeDroite==false && derapeGauche==false){
             x=x+dx*(frontSpeed*0.025);
@@ -106,7 +100,7 @@ public class Kart extends Item {
         } 
     }
     
-    public void ralentit(int i){
+    public void ralentit(int i){//quand on relache la touche accélerer
          if (frontSpeed>0.2 && (derapeDroite || derapeGauche)){
             frontSpeed=frontSpeed-0.14;
          }
@@ -122,8 +116,8 @@ public class Kart extends Item {
         }
     }
     
-    public void freine(){
-        if (frontSpeed==0){
+    public void freine(){//quand on appuie sur la touche de frein/marche arrière
+        if (frontSpeed==0){//si la vitesse est nulle, la kart fait une marche arrière
             x=x-dx*0.075;
             y=y-dy*0.075;
         }
@@ -137,7 +131,7 @@ public class Kart extends Item {
     
     public void derapage(char tourne,char freine){
         this.calculTheta();
-        double fAdm=adherence*2000;//limite de dérapage à 12 m/s d'un kart avec un poids moyen (150kg) et une adhérence neutre (1), Rc=10m
+        double fAdm=adherence*2000;//limite de dérapage à environ 12 m/s d'un kart avec un poids moyen (150kg) et une adhérence neutre (1), Rc=10m
         if (derapeDroite==false && derapeGauche==false){//coef de contrebraquage neutre si le kart ne dérape pas
             contrebraque=1;
         }                                       
@@ -148,7 +142,7 @@ public class Kart extends Item {
                 if (contrebraque<contrebraqueMax){
                     contrebraque=contrebraqueMax;
                 }
-            }//System.out.println("contrebraque="+contrebraque);
+            }
         }
         else if ((derapeGauche || derapeDroite) && tourne=='0'){//coeff moins fort quand on ne fait que redresser les roues
             if (contrebraque>contrebraqueMax+0.4){//d'où le 0.4
@@ -187,16 +181,14 @@ public class Kart extends Item {
 
                 }
                 derapeGauche=true;
-                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;//0.0008 normalemen
+                double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008; //l'angle de direction de la voiture càd vers où elle avancera, qui s'ajoute à chaque itération
                 dxDir=Math.cos(thetaDir+thetaOri);
                 dyDir=Math.sin(thetaDir+thetaOri);
                 thetaOri=thetaOri+thetaDir;
-                
-                double thetad=frontSpeed*0.0015*coeffFrein;// coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
-                                                            //le thetad représente l'angle de pivotement de la voiture sur elle même=/=thetaDir          
+                double thetad=frontSpeed*0.0015*coeffFrein;//0.0015 coeff arbitraire pour avoir un angle convenable de dérapage (si on freine l'angle est plus grand) 
+                                                            //le thetad représente l'angle de pivotement (qui s'ajoute à chaque itération) de la voiture sur elle même=/=thetaDir          
                 dx=Math.cos(thetad+theta);
                 dy=Math.sin(thetad+theta);
-                
                 if (Math.abs(Math.atan2(dy,dx)-Math.atan2(dyDir,dxDir))>0.5){//il derape plus longtemps si la direction de la voiture est différente de celle vers laquelle elle dérape
                     coeff=0.15;
                 }
@@ -214,7 +206,6 @@ public class Kart extends Item {
                     thetaOri=theta;
                 }
                 derapeDroite=true;
-                
                 double thetaDir=frontSpeed*frontSpeed*coeffFrein*0.00008;
                 dxDir=Math.cos(-thetaDir+thetaOri);
                 dyDir=Math.sin(-thetaDir+thetaOri);
@@ -232,21 +223,12 @@ public class Kart extends Item {
             x=x+dxDir*(frontSpeed*0.025);
             y=y+dyDir*(frontSpeed*0.025);
         }
-        //System.out.println("coeff="+coeff);
     }
     
-  /*  public void drawGraphTest(Graphics g){
-        
-        g.drawImage(image,(int)(x),(int)(576-y),null);
-        g.setColor(Color.red);
-        g.drawLine((int)x,(int)(576-y),(int)(x+dx*20),(int)((576-(y+dy*20))));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
-    }
-    */
+  
     public void draw(Graphics g, int ax, int ay, double echelle){
             
             g.drawImage(image,ax,ay,null);
-            //g.setColor(Color.red);
-            //g.drawLine(ax,ay,(int)(ax+dx*20),(int)(ay-dy*20));//ça affiche une ligne qui indique la direction de la voiture pour m'aider lors des tests
         }
     
     
@@ -266,7 +248,7 @@ public class Kart extends Item {
             return colli;                                                                          
         }                                                                                  
                                
-        else if (item.nomObjet=="KART"){   
+        else if (item.nomObjet=="KART"){   //N'A JAMAIS PU ETRE IMPLEMENTE
             //calcul des équations des 4 droites du kart
             double a1=-1/Math.tan(item.theta);//a1=a3
             double b1=item.y-(h/2)*Math.sin(item.theta)-a1*(item.x-(h/2)*Math.cos(item.theta));
@@ -284,7 +266,7 @@ public class Kart extends Item {
         }return colli;
     }
     
-    public void coordCoinsX(){// ici on calcule les coordonnés des coins du kart cf schéma 
+    public void coordCoinsX(){// ici on calcule les coordonnés des coins du kart
         //Attention theta doit être mis à jour                                                               
         this.tabx[0]=this.x;//au milieu du kart                                                               
         this.tabx[1]=this.x-(h/2)*Math.cos(this.theta)+(l/2)*Math.sin(this.theta);//en bas à droite du Kart          
@@ -322,7 +304,7 @@ public class Kart extends Item {
         }return colliMur;
     }
     
-    public void doColliMurs(){
+    public void doColliMurs(){//le kart reculera à l'opposée de la direction vers laquelle il avançait
         if (derapeGauche==false && derapeDroite==false){
             this.setX(x-dx*2.5);
             this.setY(y-dy*2.5);

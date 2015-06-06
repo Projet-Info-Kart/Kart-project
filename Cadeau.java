@@ -13,7 +13,7 @@ public class Cadeau extends Item{
         this.nomObjet="CADEAU";
     }
     
-    public boolean collision(Item item){
+    public boolean collision(Item item){//teste la collision avec un autre item
         boolean colli=false;
         if (item.nomObjet=="KART" && this.visible){
             for (int i=0;i<5;i++){
@@ -33,7 +33,7 @@ public class Cadeau extends Item{
         }
     }
     
-    public void rendVisible(){
+    public void rendVisible(){//le cadeau réapparait au bout de 6,25 s après la collision
         if (!visible){
             if (tempsVie>250){
                 visible=true;
@@ -41,7 +41,7 @@ public class Cadeau extends Item{
         }
     }
     
-    public void doCollision(Item item){
+    public void doCollision(Item item){//donne un bonus aléatoire au kart
         if (!((Kart)item).Bonus()){
             int b=(int)((Math.random()*3)+1);//nombre entier aléatoire entre 1 et 3
             ((Kart)item).setBonus(b);

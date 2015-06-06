@@ -7,7 +7,7 @@ public class Banane extends Projectile{
         this.nomObjet="BANANE";
     }
     
-    public void doCollision(Item item){
+    public void doCollision(Item item){//reset la vitesse du kart à 0
         item.frontSpeed=0;
         this.actif=false;
         item.actif=false;

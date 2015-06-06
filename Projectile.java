@@ -30,7 +30,7 @@ public abstract class Projectile extends Item{
         return colli;
     } 
     
-    public boolean colliMurs(){
+    public boolean colliMurs(){//teste si un projectile est ou non à l'intérieur des 2 ellipses
         boolean colliMur=false;
         if ((x*x/((PanelField.aInt)*(PanelField.aInt)))+(y*y/((PanelField.bInt)*(PanelField.bInt)))<=1 || (x*x/((PanelField.aExt)*(PanelField.aExt)))+(y*y/((PanelField.bExt)*(PanelField.bExt)))>=1 ){
             colliMur=true;
