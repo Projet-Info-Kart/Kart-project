@@ -34,16 +34,12 @@ public class PanelSelectionKart extends JPanel {
         setLayout(new GridLayout (2,2,350,600));
         
         Next.setMaximumSize(new Dimension (150,50)); //règle la taille horizontale
-        Next.setPreferredSize(new Dimension (150,50));
         
         Previous.setMaximumSize(new Dimension (150,50)); //règle la taille horizontale
-        Previous.setPreferredSize(new Dimension (150,50));
         
         Pick.setMaximumSize(new Dimension (250,50)); //règle la taille horizontale
-        Pick.setPreferredSize(new Dimension (250,50));
         
         Back.setMaximumSize(new Dimension (150,50)); //règle la taille horizontale
-        Back.setPreferredSize(new Dimension (150,50));
         
         //Règle la taille du texte dans chaque button
         Font newButtonFont=new Font(Next.getFont().getName(),Next.getFont().getStyle(),30);

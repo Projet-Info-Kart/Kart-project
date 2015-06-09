@@ -112,9 +112,9 @@ public class PanelField extends JPanel{
         //Création des kart
         if(modeJoueur==1){kart1=new Kart(444,174,0,1,15,10,0.1,150,1);}
         else if(numJoueur==1){
-                kart1=new Kart(439,169,0,1,15,10,0.1,150,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
+                kart1=new Kart(439.2,171.9,0,1,15,10,0.1,150,1);  // ligne 5m derrière la première, kart 1m derrière = 175-6
             }else {
-                kart1=new Kart(441,174,0,1,15,10,0.1,150,1);
+                kart1=new Kart(442.5,175,0,1,15,10,0.1,150,1);
         }
         
 
@@ -232,75 +232,75 @@ public class PanelField extends JPanel{
       
     /**Gère les déplacements du kart et les bonus */
     public void boucle_principale_jeu(){
-            X=kart1.getX();
-            Y=kart1.getY();
-            DX=kart1.getdx();
-            DY=kart1.getdy();
-            if(tempsCourse>0&&!end){
-                if (ToucheBas){
-                    freine='y';
-                    kart1.freine();
-                }
-                if (ToucheGauche){
-                    tourne='g';
-                }
-                else if (ToucheDroite){
-                    tourne='d';
-                }
-                else{
-                    tourne='0';
-                }
-                if (ToucheHaut && (ToucheGauche || ToucheDroite )) {
-                    kart1.avance(1); 
-                }
-                else if (ToucheHaut){
-                    kart1.avance(0);
-                }
-                kart1.tourne(tourne);
-                if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){
-                    kart1.ralentit(1); 
-                }
-                else if (ToucheHaut==false){
-                    kart1.ralentit(0);
-                }
-                kart1.derapage(tourne,freine);
-                freine='n';
+        X=kart1.getX();
+        Y=kart1.getY();
+        DX=kart1.getdx();
+        DY=kart1.getdy();
+        if(tempsCourse>0&&!end){
+            if (ToucheBas){
+                freine='y';
+                kart1.freine();
+            }
+            if (ToucheGauche){
+                tourne='g';
+            }
+            else if (ToucheDroite){
+                tourne='d';
+            }
+            else{
+                tourne='0';
+            }
+            if (ToucheHaut && (ToucheGauche || ToucheDroite )) {
+                kart1.avance(1); 
+            }
+            else if (ToucheHaut){
+                kart1.avance(0);
+            }
+            kart1.tourne(tourne);
+            if (ToucheHaut==false && (ToucheGauche || ToucheDroite )){
+                kart1.ralentit(1); 
+            }
+             else if (ToucheHaut==false){
+                kart1.ralentit(0);
+            }
+            kart1.derapage(tourne,freine);
+            freine='n';
 
-                if (kart1.Bonus()){//Si le kart a un bonus dispo
-                    textBonus.setText("Bonus : "+kart1.getNomBonus());
-                    if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
-                        if (kart1.getNomBonus()=="MISSILE"){
-                            if (Shift){
-                                Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
-                                Items.add(m);
-                                kart1.setABonus(false);
-                            }
-                            else if (Space){
-                                Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
-                                Items.add(m);
-                                kart1.setABonus(false);
-                            }
+            if (kart1.Bonus()){//Si le kart a un bonus dispo
+                textBonus.setText("Bonus : "+kart1.getNomBonus());
+                if (Shift || Space ){//FlecheHaut pour tirer missile haut, FlecheBas pour le tirer en bas, Space pour poser bombe ou banane
+                    if (kart1.getNomBonus()=="MISSILE"){
+                        if (Shift){
+                            Missile m=new Missile(X+DX*2.5,Y+DY*2.5,DX,DY);//le missile est créé devant si on tire devant
+                            Items.add(m);
+                            kart1.setABonus(false);
                         }
-                        else if (kart1.getNomBonus()=="BANANE"){
-                            if (Space){
-                                Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
-                                Items.add(b);
-                                kart1.setABonus(false);
-                            }
-                        }
-                        else if (kart1.getNomBonus()=="BOMBE"){
-                            if (Space){
-                                Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
-                                Items.add(b);
-                                kart1.setABonus(false);
-                            }
+                        else if (Space){
+                            Missile m=new Missile(X-DX*2.5,Y-DY*2.5,-DX,-DY);//ou derrière si on tire derrière
+                            Items.add(m);
+                            kart1.setABonus(false);
                         }
                     }
-              }else{textBonus.setText("Bonus : ");}
-              
-                kart1.calculTheta();
-                kart1.coordCoinsX();
-                kart1.coordCoinsY();
+                    else if (kart1.getNomBonus()=="BANANE"){
+                        if (Space){
+                            Banane b=new Banane(X-DX*2.5,Y-DY*2.5,DX,DY);
+                            Items.add(b);
+                            kart1.setABonus(false);
+                        }
+                    }
+                    else if (kart1.getNomBonus()=="BOMBE"){
+                        if (Space){
+                            Bombe b=new Bombe(X-DX*2.5,Y-DY*2.5,DX,DY);
+                            Items.add(b);
+                            kart1.setABonus(false);
+                        }
+                    }
+                }
+            }else{textBonus.setText("Bonus : ");}
+            
+            kart1.calculTheta();
+            kart1.coordCoinsX();
+            kart1.coordCoinsY();
             if (kart1.colliMurs()){
                  kart1.doColliMurs();
             }
@@ -417,21 +417,21 @@ public class PanelField extends JPanel{
         //Ligne de départ
         if(tempsCourse<10000){     // laisse afficher la ligne de départ durant 10 secondes, remplacée ensuite par la ligne d'arrivée   
             if(modeJoueur==1){
-                x1=this.m2SX(450, 175,fx, fy, 28, alpha, echelle);       
-                x2=this.m2SX(438, 175,fx, fy, 28, alpha, echelle);      
+                x1=this.m2SX(450, 175,fx, fy, 28, alpha, echelle); 
                 y1=this.m2SY(450, 175,fx,fy, 28, alpha, echelle);
+                x2=this.m2SX(438, 175,fx, fy, 28, alpha, echelle);      
                 y2=this.m2SY(438, 175,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);  }
             else{                       // mode 2 joueurs : 2 lignes pour compenser le position sur l'ellipse des 2 karts
-                x1=this.m2SX(450-9-0.5, 175-5,fx, fy, 28, alpha, echelle);       
-                x2=this.m2SX(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);      
-                y1=this.m2SY(450-9-0.5, 175-5,fx,fy, 28, alpha, echelle);
-                y2=this.m2SY(450-9-3.5, 175-5,fx, fy, 28, alpha, echelle);
+                x1=this.m2SX(440.5, 172,fx, fy, 28, alpha, echelle);//       
+                y1=this.m2SY(440.5, 172,fx,fy, 28, alpha, echelle);
+                x2=this.m2SX(438, 172,fx, fy, 28, alpha, echelle);  
+                y2=this.m2SY(438, 172,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);  
             
-                x1=this.m2SX(450-6, 175,fx, fy, 28, alpha, echelle);       
-                x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
+                x1=this.m2SX(450-6, 175,fx, fy, 28, alpha, echelle);
                 y1=this.m2SY(450-6, 175,fx,fy, 28, alpha, echelle);
+                x2=this.m2SX(450-9, 175,fx, fy, 28, alpha, echelle);      
                 y2=this.m2SY(450-9, 175,fx, fy, 28, alpha, echelle);
                 buffer.drawLine(x1,y1,x2,y2);
             }
